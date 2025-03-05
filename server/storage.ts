@@ -22,18 +22,27 @@ export class MemStorage implements IStorage {
 
   async createClient(insertClient: InsertClient): Promise<Client> {
     const id = this.currentId++;
+    // Ensure services is an array
+    const services = Array.isArray(insertClient.services) 
+      ? insertClient.services 
+      : [];
+
     const client: Client = {
       id,
       ...insertClient,
+      services,
       status: "pending",
     };
+
     this.clients.set(id, client);
     return client;
   }
 
   async updateClientStatus(id: number, status: string): Promise<Client> {
     const client = await this.getClient(id);
-    if (!client) throw new Error("Client not found");
+    if (!client) {
+      throw new Error("Client not found");
+    }
 
     const updatedClient = {
       ...client,

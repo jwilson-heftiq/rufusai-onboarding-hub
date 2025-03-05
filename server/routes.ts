@@ -2,6 +2,7 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { insertClientSchema } from "@shared/schema";
+import { fromZodError } from "zod-validation-error";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Client creation endpoint
@@ -11,14 +12,33 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const client = await storage.createClient(clientData);
       res.status(201).json(client);
     } catch (error) {
-      res.status(400).json({ error: "Invalid client data" });
+      console.error('Client creation error:', error);
+      if (error.name === 'ZodError') {
+        const validationError = fromZodError(error);
+        return res.status(400).json({ 
+          error: 'Validation failed',
+          details: validationError.message
+        });
+      }
+      res.status(500).json({ 
+        error: "Failed to create client",
+        message: error.message 
+      });
     }
   });
 
   // Get all clients
   app.get("/api/clients", async (_req, res) => {
-    const clients = await storage.getAllClients();
-    res.json(clients);
+    try {
+      const clients = await storage.getAllClients();
+      res.json(clients);
+    } catch (error) {
+      console.error('Error fetching clients:', error);
+      res.status(500).json({ 
+        error: "Failed to fetch clients",
+        message: error.message 
+      });
+    }
   });
 
   // Update client status
@@ -30,7 +50,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const client = await storage.updateClientStatus(Number(id), status);
       res.json(client);
     } catch (error) {
-      res.status(404).json({ error: "Client not found" });
+      console.error('Error updating client status:', error);
+      res.status(404).json({ 
+        error: "Failed to update client",
+        message: error.message 
+      });
     }
   });
 
