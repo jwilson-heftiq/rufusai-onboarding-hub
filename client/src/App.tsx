@@ -60,6 +60,7 @@ export default function App() {
         scope: "openid profile email"
       }}
       cacheLocation="localstorage"
+      useRefreshTokens={true}
     >
       <QueryClientProvider client={queryClient}>
         <Router />

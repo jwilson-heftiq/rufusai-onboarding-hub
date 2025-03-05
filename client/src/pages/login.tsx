@@ -52,8 +52,12 @@ export default function Login() {
         <Button 
           className="w-full" 
           onClick={() => {
-            console.log("Initiating login redirect");
+            console.log("Initiating passwordless login redirect");
             loginWithRedirect({
+              authorizationParams: {
+                connection: 'email',
+                prompt: 'login',
+              },
               appState: { returnTo: "/dashboard" }
             });
           }}
@@ -65,7 +69,7 @@ export default function Login() {
               Signing in...
             </>
           ) : (
-            "Sign in with Auth0"
+            "Sign in with Email"
           )}
         </Button>
       </Card>
