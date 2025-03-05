@@ -30,6 +30,7 @@ function Router() {
   return (
     <Switch>
       <Route path="/login" component={Login} />
+      <Route path="/callback" component={Login} />
       <Route path="/dashboard" component={() => <ProtectedRoute component={Dashboard} />} />
       <Route path="/onboard/welcome" component={() => <ProtectedRoute component={Welcome} />} />
       <Route path="/onboard/client-info" component={() => <ProtectedRoute component={ClientInfo} />} />
@@ -54,7 +55,7 @@ export default function App() {
       domain={domain}
       clientId={clientId}
       authorizationParams={{
-        redirect_uri: window.location.origin
+        redirect_uri: window.location.origin + '/callback'
       }}
     >
       <QueryClientProvider client={queryClient}>

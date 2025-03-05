@@ -17,6 +17,10 @@ const config = {
     : 'http://localhost:5000',
   clientID: process.env.AUTH0_CLIENT_ID,
   issuerBaseURL: `https://${process.env.AUTH0_DOMAIN}`,
+  routes: {
+    callback: '/callback',
+    login: '/login',
+  },
 };
 
 // Auth router attaches /login, /logout, and /callback routes
@@ -66,9 +70,8 @@ app.use((req, res, next) => {
   app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
     const status = err.status || err.statusCode || 500;
     const message = err.message || "Internal Server Error";
-
+    console.error('Error:', err);
     res.status(status).json({ message });
-    throw err;
   });
 
   if (app.get("env") === "development") {
