@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormDescription } from "@/components/ui/form";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormDescription, FormMessage } from "@/components/ui/form";
 import { useForm } from "react-hook-form";
 import { useLocation } from "wouter";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -29,14 +29,24 @@ export default function ClientInfo() {
     onSuccess: () => {
       setLocation("/onboard/verify");
     },
-    onError: () => {
+    onError: (error: Error) => {
+      console.error('Form submission error:', error);
       toast({
-        title: "Error",
-        description: "Failed to create client",
+        title: "Submission Failed",
+        description: error.message || "There was an error creating the client. Please try again.",
         variant: "destructive"
       });
     }
   });
+
+  const onSubmit = async (data: any) => {
+    try {
+      await mutation.mutateAsync(data);
+    } catch (error) {
+      // Error is handled by mutation.onError
+      console.error('Form submission error:', error);
+    }
+  };
 
   return (
     <OnboardingLayout>
@@ -47,7 +57,7 @@ export default function ClientInfo() {
         </p>
 
         <Form {...form}>
-          <form onSubmit={form.handleSubmit((data) => mutation.mutate(data))} className="space-y-6">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
             <FormField
               control={form.control}
               name="name"
@@ -57,6 +67,7 @@ export default function ClientInfo() {
                   <FormControl>
                     <Input {...field} placeholder="Enter client name" />
                   </FormControl>
+                  <FormMessage />
                 </FormItem>
               )}
             />
@@ -66,13 +77,14 @@ export default function ClientInfo() {
               name="companyUrl"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Company Reference</FormLabel>
+                  <FormLabel>Company URL</FormLabel>
                   <FormControl>
-                    <Input {...field} placeholder="Enter Rufus reference ID" />
+                    <Input {...field} placeholder="https://" />
                   </FormControl>
                   <FormDescription>
-                    Enter your unique Rufus system reference identifier
+                    Enter your company's website URL
                   </FormDescription>
+                  <FormMessage />
                 </FormItem>
               )}
             />
@@ -86,13 +98,14 @@ export default function ClientInfo() {
                   <FormControl>
                     <Input {...field} type="password" />
                   </FormControl>
+                  <FormMessage />
                 </FormItem>
               )}
             />
 
             <div className="flex justify-between gap-4">
-              <Button variant="outline" onClick={() => setLocation("/onboard/welcome")}>
-                Back
+              <Button variant="outline" onClick={() => setLocation("/dashboard")}>
+                Cancel
               </Button>
               <Button type="submit" disabled={mutation.isPending}>
                 {mutation.isPending ? "Submitting..." : "Submit"}

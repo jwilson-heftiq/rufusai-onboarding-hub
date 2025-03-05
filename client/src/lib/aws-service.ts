@@ -11,12 +11,12 @@ class AWSService {
   private tokenExpiry: Date | null = null;
 
   private async getToken(): Promise<string> {
-    // Return existing token if still valid
-    if (this.token && this.tokenExpiry && this.tokenExpiry > new Date()) {
-      return this.token.access_token;
-    }
-
     try {
+      // Return existing token if still valid
+      if (this.token && this.tokenExpiry && this.tokenExpiry > new Date()) {
+        return this.token.access_token;
+      }
+
       const response = await fetch(import.meta.env.AWS_OAUTH_TOKEN_URL, {
         method: 'POST',
         headers: {
@@ -31,17 +31,18 @@ class AWSService {
       });
 
       if (!response.ok) {
-        throw new Error('Failed to obtain OAuth token');
+        const errorText = await response.text();
+        throw new Error(`OAuth token request failed: ${response.status} - ${errorText}`);
       }
 
-      this.token = await response.json();
-      // Set expiry time slightly before actual expiry to ensure token validity
+      const tokenData = await response.json();
+      this.token = tokenData;
       this.tokenExpiry = new Date(Date.now() + ((this.token.expires_in - 60) * 1000));
 
       return this.token.access_token;
     } catch (error) {
       console.error('Error obtaining OAuth token:', error);
-      throw new Error('Authentication failed');
+      throw new Error('Failed to authenticate with AWS services');
     }
   }
 
@@ -60,7 +61,8 @@ class AWSService {
       });
 
       if (!response.ok) {
-        throw new Error(`API request failed: ${response.statusText}`);
+        const errorText = await response.text();
+        throw new Error(`API request failed: ${response.status} - ${errorText}`);
       }
 
       return response;
@@ -72,14 +74,23 @@ class AWSService {
 
   async submitClientData(clientData: any): Promise<any> {
     try {
-      const response = await this.makeRequest('/clients', {
-        method: 'POST',
-        body: JSON.stringify(clientData),
-      });
-      return response.json();
+      // First try AWS submission
+      try {
+        const response = await this.makeRequest('/clients', {
+          method: 'POST',
+          body: JSON.stringify(clientData),
+        });
+        return await response.json();
+      } catch (awsError) {
+        console.error('AWS submission failed:', awsError);
+        // Continue with local storage even if AWS fails
+      }
+
+      // Always proceed with local storage
+      return await apiRequest("POST", "/api/clients", clientData).then(res => res.json());
     } catch (error) {
       console.error('Error submitting client data:', error);
-      throw new Error('Failed to submit client data to AWS');
+      throw new Error('Failed to submit client data. Please try again.');
     }
   }
 }
