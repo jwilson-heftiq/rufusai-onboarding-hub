@@ -8,27 +8,58 @@ import ClientInfo from "@/pages/onboarding/client-info";
 import Verify from "@/pages/onboarding/verify";
 import Success from "@/pages/onboarding/success";
 import Dashboard from "@/pages/dashboard";
+import Login from "@/pages/login";
+import { Auth0Provider } from "@auth0/auth0-react";
+import { useAuthRedirect } from "./lib/auth";
+
+function ProtectedRoute({ component: Component }: { component: () => JSX.Element }) {
+  const { isLoading } = useAuthRedirect();
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="animate-spin h-8 w-8 border-4 border-primary border-t-transparent rounded-full"></div>
+      </div>
+    );
+  }
+
+  return <Component />;
+}
 
 function Router() {
   return (
     <Switch>
-      <Route path="/" component={Dashboard} />
-      <Route path="/onboard/welcome" component={Welcome} />
-      <Route path="/onboard/client-info" component={ClientInfo} />
-      <Route path="/onboard/verify" component={Verify} />
-      <Route path="/onboard/success" component={Success} />
+      <Route path="/login" component={Login} />
+      <Route path="/" component={() => <ProtectedRoute component={Dashboard} />} />
+      <Route path="/onboard/welcome" component={() => <ProtectedRoute component={Welcome} />} />
+      <Route path="/onboard/client-info" component={() => <ProtectedRoute component={ClientInfo} />} />
+      <Route path="/onboard/verify" component={() => <ProtectedRoute component={Verify} />} />
+      <Route path="/onboard/success" component={() => <ProtectedRoute component={Success} />} />
       <Route component={NotFound} />
     </Switch>
   );
 }
 
-function App() {
+export default function App() {
+  const domain = import.meta.env.VITE_AUTH0_DOMAIN;
+  const clientId = import.meta.env.VITE_AUTH0_CLIENT_ID;
+
+  if (!domain || !clientId) {
+    throw new Error('Missing Auth0 configuration');
+  }
+
   return (
-    <QueryClientProvider client={queryClient}>
-      <Router />
-      <Toaster />
-    </QueryClientProvider>
+    <Auth0Provider
+      domain={domain}
+      clientId={clientId}
+      authorizationParams={{
+        redirect_uri: window.location.origin
+      }}
+    >
+      <QueryClientProvider client={queryClient}>
+        <Router />
+        <Toaster />
+      </QueryClientProvider>
+    </Auth0Provider>
   );
 }
-
-export default App;
