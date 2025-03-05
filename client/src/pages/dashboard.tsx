@@ -19,7 +19,7 @@ export default function Dashboard() {
             <Database className="h-6 w-6" />
             <span className="font-semibold">Rufus Labs Onboarding</span>
           </div>
-          <Button onClick={() => setLocation("/onboard/welcome")}>
+          <Button onClick={() => setLocation("/onboard/client-info")}>
             <Plus className="mr-2 h-4 w-4" /> Add New Client
           </Button>
         </div>

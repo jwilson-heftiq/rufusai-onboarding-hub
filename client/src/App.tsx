@@ -3,7 +3,6 @@ import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import NotFound from "@/pages/not-found";
-import Welcome from "@/pages/onboarding/welcome";
 import ClientInfo from "@/pages/onboarding/client-info";
 import Verify from "@/pages/onboarding/verify";
 import Success from "@/pages/onboarding/success";
@@ -32,11 +31,10 @@ function Router() {
       <Route path="/login" component={Login} />
       <Route path="/callback" component={Login} />
       <Route path="/dashboard" component={() => <ProtectedRoute component={Dashboard} />} />
-      {/* Onboarding routes - no longer wrapped in ProtectedRoute */}
-      <Route path="/onboard/welcome" component={Welcome} />
-      <Route path="/onboard/client-info" component={ClientInfo} />
-      <Route path="/onboard/verify" component={Verify} />
-      <Route path="/onboard/success" component={Success} />
+      {/* Onboarding routes */}
+      <Route path="/onboard/client-info" component={() => <ProtectedRoute component={ClientInfo} />} />
+      <Route path="/onboard/verify" component={() => <ProtectedRoute component={Verify} />} />
+      <Route path="/onboard/success" component={() => <ProtectedRoute component={Success} />} />
       <Route path="/" component={Login} />
       <Route component={NotFound} />
     </Switch>
