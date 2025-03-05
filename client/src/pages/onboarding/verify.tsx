@@ -21,8 +21,8 @@ export default function Verify() {
               <p className="font-medium">Acme Corporation</p>
             </div>
             <div>
-              <p className="text-sm text-muted-foreground">Company URL</p>
-              <p className="font-medium">acme.com</p>
+              <p className="text-sm text-muted-foreground">Company Reference</p>
+              <p className="font-medium">ACME-2024</p>
             </div>
           </div>
 

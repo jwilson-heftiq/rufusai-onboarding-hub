@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Form, FormControl, FormField, FormItem, FormLabel } from "@/components/ui/form";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormDescription } from "@/components/ui/form";
 import { useForm } from "react-hook-form";
 import { useLocation } from "wouter";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -13,7 +13,7 @@ import { useToast } from "@/hooks/use-toast";
 export default function ClientInfo() {
   const [_, setLocation] = useLocation();
   const { toast } = useToast();
-  
+
   const form = useForm({
     resolver: zodResolver(insertClientSchema),
     defaultValues: {
@@ -66,10 +66,13 @@ export default function ClientInfo() {
               name="companyUrl"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Company URL</FormLabel>
+                  <FormLabel>Company Reference</FormLabel>
                   <FormControl>
-                    <Input {...field} placeholder="https://" />
+                    <Input {...field} placeholder="Enter Rufus reference ID" />
                   </FormControl>
+                  <FormDescription>
+                    Enter your unique Rufus system reference identifier
+                  </FormDescription>
                 </FormItem>
               )}
             />

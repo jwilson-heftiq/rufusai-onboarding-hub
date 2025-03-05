@@ -23,8 +23,8 @@ export default function Success() {
             <p className="font-medium">Acme Corporation</p>
           </div>
           <div className="p-4 bg-muted rounded-lg">
-            <p className="text-sm text-muted-foreground">Company URL</p>
-            <p className="font-medium">acme.com</p>
+            <p className="text-sm text-muted-foreground">Company Reference</p>
+            <p className="font-medium">ACME-2024</p>
           </div>
           <div className="col-span-2 p-4 bg-muted rounded-lg">
             <p className="text-sm text-muted-foreground">API Key</p>
