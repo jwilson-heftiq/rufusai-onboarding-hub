@@ -4,9 +4,25 @@ import { Form, FormControl, FormField, FormItem, FormLabel } from "@/components/
 import { useForm } from "react-hook-form";
 import { useLocation } from "wouter";
 import OnboardingLayout from "./layout";
+import { useAuth0 } from "@auth0/auth0-react";
+import { useEffect } from "react";
 
 export default function Welcome() {
   const [_, setLocation] = useLocation();
+  const { isAuthenticated, loginWithRedirect } = useAuth0();
+
+  useEffect(() => {
+    if (!isAuthenticated) {
+      loginWithRedirect({
+        appState: { returnTo: "/onboard/client-info" },
+        authorizationParams: {
+          connection: 'email',
+          prompt: 'login',
+        }
+      });
+    }
+  }, [isAuthenticated, loginWithRedirect]);
+
   const form = useForm({
     defaultValues: {
       email: ""
@@ -16,6 +32,10 @@ export default function Welcome() {
   const onSubmit = () => {
     setLocation("/onboard/client-info");
   };
+
+  if (!isAuthenticated) {
+    return null; // Don't render anything while redirecting to login
+  }
 
   return (
     <OnboardingLayout>
@@ -27,20 +47,8 @@ export default function Welcome() {
 
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-            <FormField
-              control={form.control}
-              name="email"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Email Address</FormLabel>
-                  <FormControl>
-                    <Input {...field} type="email" placeholder="Enter your email" />
-                  </FormControl>
-                </FormItem>
-              )}
-            />
             <Button type="submit" className="w-full">
-              Send Magic Link
+              Start Onboarding
             </Button>
           </form>
         </Form>
