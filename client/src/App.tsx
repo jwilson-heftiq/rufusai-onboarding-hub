@@ -59,6 +59,7 @@ export default function App() {
         audience: `https://${domain}/api/v2/`,
         scope: "openid profile email"
       }}
+      cacheLocation="localstorage"
     >
       <QueryClientProvider client={queryClient}>
         <Router />

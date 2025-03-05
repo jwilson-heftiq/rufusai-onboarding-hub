@@ -23,13 +23,18 @@ export default function Login() {
         <Card className="w-full max-w-md p-6">
           <div className="text-center">
             <p className="text-destructive">Authentication Error: {error.message}</p>
+            <Button 
+              className="mt-4" 
+              variant="outline" 
+              onClick={() => window.location.reload()}
+            >
+              Try Again
+            </Button>
           </div>
         </Card>
       </div>
     );
   }
-
-  console.log("Auth0 state:", { isAuthenticated, isLoading });
 
   return (
     <div className="min-h-screen bg-background flex items-center justify-center">
@@ -48,7 +53,9 @@ export default function Login() {
           className="w-full" 
           onClick={() => {
             console.log("Initiating login redirect");
-            loginWithRedirect();
+            loginWithRedirect({
+              appState: { returnTo: "/dashboard" }
+            });
           }}
           disabled={isLoading}
         >
