@@ -11,11 +11,13 @@ export default function Login() {
 
   useEffect(() => {
     if (isAuthenticated) {
-      setLocation("/");
+      console.log("User authenticated, redirecting to dashboard");
+      setLocation("/dashboard");
     }
   }, [isAuthenticated, setLocation]);
 
   if (error) {
+    console.error("Auth0 error:", error);
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <Card className="w-full max-w-md p-6">
@@ -26,6 +28,8 @@ export default function Login() {
       </div>
     );
   }
+
+  console.log("Auth0 state:", { isAuthenticated, isLoading });
 
   return (
     <div className="min-h-screen bg-background flex items-center justify-center">
@@ -42,7 +46,10 @@ export default function Login() {
 
         <Button 
           className="w-full" 
-          onClick={() => loginWithRedirect()}
+          onClick={() => {
+            console.log("Initiating login redirect");
+            loginWithRedirect();
+          }}
           disabled={isLoading}
         >
           {isLoading ? (

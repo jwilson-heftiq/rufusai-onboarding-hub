@@ -55,7 +55,9 @@ export default function App() {
       domain={domain}
       clientId={clientId}
       authorizationParams={{
-        redirect_uri: window.location.origin + '/callback'
+        redirect_uri: `${window.location.origin}/callback`,
+        audience: `https://${domain}/api/v2/`,
+        scope: "openid profile email"
       }}
     >
       <QueryClientProvider client={queryClient}>
