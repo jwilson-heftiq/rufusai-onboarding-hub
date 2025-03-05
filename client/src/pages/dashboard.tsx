@@ -1,0 +1,92 @@
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { useQuery } from "@tanstack/react-query";
+import { Database } from "lucide-react";
+import { useLocation } from "wouter";
+import { Plus, Users, Zap, Clock } from "lucide-react";
+
+export default function Dashboard() {
+  const [_, setLocation] = useLocation();
+  const { data: clients } = useQuery({
+    queryKey: ["/api/clients"]
+  });
+
+  return (
+    <div className="min-h-screen bg-background">
+      <div className="border-b">
+        <div className="flex h-16 items-center px-4 container">
+          <div className="flex items-center gap-2 flex-1">
+            <Database className="h-6 w-6" />
+            <span className="font-semibold">Rufus Labs Onboarding</span>
+          </div>
+          <Button onClick={() => setLocation("/onboard/welcome")}>
+            <Plus className="mr-2 h-4 w-4" /> Add New Client
+          </Button>
+        </div>
+      </div>
+
+      <main className="container py-8">
+        <div className="grid gap-4 md:grid-cols-3 mb-8">
+          <Card>
+            <CardContent className="pt-6">
+              <div className="flex items-center gap-2">
+                <Users className="h-5 w-5 text-muted-foreground" />
+                <h3 className="text-lg font-medium">Total Clients</h3>
+              </div>
+              <p className="text-3xl font-bold mt-2">24</p>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardContent className="pt-6">
+              <div className="flex items-center gap-2">
+                <Zap className="h-5 w-5 text-muted-foreground" />
+                <h3 className="text-lg font-medium">Active Integrations</h3>
+              </div>
+              <p className="text-3xl font-bold mt-2">18</p>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardContent className="pt-6">
+              <div className="flex items-center gap-2">
+                <Clock className="h-5 w-5 text-muted-foreground" />
+                <h3 className="text-lg font-medium">Pending Setup</h3>
+              </div>
+              <p className="text-3xl font-bold mt-2">6</p>
+            </CardContent>
+          </Card>
+        </div>
+
+        <h2 className="text-lg font-medium mb-4">Recent Clients</h2>
+        <Card>
+          <CardContent className="py-6">
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <Users className="h-8 w-8 text-muted-foreground" />
+                  <div>
+                    <p className="font-medium">Acme Corporation</p>
+                    <p className="text-sm text-muted-foreground">acme.com</p>
+                  </div>
+                </div>
+                <span className="text-sm text-green-500">Active</span>
+              </div>
+
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <Users className="h-8 w-8 text-muted-foreground" />
+                  <div>
+                    <p className="font-medium">TechStart Inc</p>
+                    <p className="text-sm text-muted-foreground">techstart.io</p>
+                  </div>
+                </div>
+                <span className="text-sm text-orange-500">Pending</span>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </main>
+    </div>
+  );
+}
