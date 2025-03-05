@@ -30,11 +30,12 @@ function Router() {
   return (
     <Switch>
       <Route path="/login" component={Login} />
-      <Route path="/" component={() => <ProtectedRoute component={Dashboard} />} />
+      <Route path="/dashboard" component={() => <ProtectedRoute component={Dashboard} />} />
       <Route path="/onboard/welcome" component={() => <ProtectedRoute component={Welcome} />} />
       <Route path="/onboard/client-info" component={() => <ProtectedRoute component={ClientInfo} />} />
       <Route path="/onboard/verify" component={() => <ProtectedRoute component={Verify} />} />
       <Route path="/onboard/success" component={() => <ProtectedRoute component={Success} />} />
+      <Route path="/" component={Login} />
       <Route component={NotFound} />
     </Switch>
   );
