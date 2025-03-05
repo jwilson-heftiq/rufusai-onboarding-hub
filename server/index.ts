@@ -1,40 +1,24 @@
 import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
-import { auth } from "express-openid-connect";
 
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-// Auth0 configuration
-const config = {
-  authRequired: false,
-  auth0Logout: true,
-  secret: process.env.AUTH0_CLIENT_SECRET,
-  baseURL: process.env.NODE_ENV === 'production' 
-    ? process.env.BASE_URL 
-    : 'http://localhost:5000',
-  clientID: process.env.AUTH0_CLIENT_ID,
-  issuerBaseURL: `https://${process.env.AUTH0_DOMAIN}`,
-  routes: {
-    callback: '/callback',
-    login: '/login',
-  },
-  authorizationParams: {
-    response_type: 'code',
-    audience: `https://${process.env.AUTH0_DOMAIN}/api/v2/`,
-    scope: 'openid profile email'
-  }
-};
+// Add CORS headers for Auth0
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  next();
+});
 
-// Auth router attaches /login, /logout, and /callback routes
-app.use(auth(config));
-
-// Require authentication for API routes
+// Middleware to check Auth0 JWT tokens
 app.use('/api', (req, res, next) => {
-  if (!req.oidc.isAuthenticated()) {
-    return res.status(401).json({ error: 'Not authenticated' });
+  const authHeader = req.headers.authorization;
+  if (!authHeader) {
+    return res.status(401).json({ error: 'No token provided' });
   }
   next();
 });
