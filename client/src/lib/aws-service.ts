@@ -56,14 +56,14 @@ class AWSService {
         method: 'POST',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
-          'Authorization': authHeader
+          'Authorization': authHeader,
+          'Accept': 'application/json'
         },
         body: new URLSearchParams({
           grant_type: 'client_credentials',
           scope: 'default-m2m-resource-server-e-pghm/read'
         }),
-        mode: 'cors',
-        credentials: 'include'
+        mode: 'cors'
       });
 
       const responseText = await response.text();
@@ -133,8 +133,7 @@ class AWSService {
             'Accept': 'application/json'
           },
           body: JSON.stringify(requestBody),
-          mode: 'cors',
-          credentials: 'include'
+          mode: 'cors'
         });
 
         const responseText = await response.text();
