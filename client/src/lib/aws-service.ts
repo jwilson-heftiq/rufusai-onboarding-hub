@@ -23,7 +23,20 @@ class AWSService {
       if (!tokenUrl) {
         throw new Error('VITE_AWS_OAUTH_TOKEN_URL environment variable is not set');
       }
-      console.log('Token URL:', tokenUrl);
+      console.log('OAuth Token URL:', tokenUrl);
+      console.log('Available env vars:', {
+        token_url: import.meta.env.VITE_AWS_OAUTH_TOKEN_URL,
+        client_id: import.meta.env.VITE_AWS_OAUTH_CLIENT_ID,
+        has_secret: !!import.meta.env.VITE_AWS_OAUTH_CLIENT_SECRET
+      });
+
+      // Validate URL format
+      try {
+        new URL(tokenUrl);
+      } catch (urlError) {
+        console.error('Invalid OAuth Token URL format:', tokenUrl);
+        throw new Error('OAuth Token URL is not a valid URL format');
+      }
 
       const clientId = import.meta.env.VITE_AWS_OAUTH_CLIENT_ID;
       const clientSecret = import.meta.env.VITE_AWS_OAUTH_CLIENT_SECRET;
