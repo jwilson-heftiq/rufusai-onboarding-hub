@@ -5,6 +5,7 @@ import { Database, LogOut } from "lucide-react";
 import { useLocation } from "wouter";
 import { Plus, Users, Zap, Clock } from "lucide-react";
 import { useAuth0 } from "@auth0/auth0-react";
+import { queryClient } from "@/lib/queryClient";
 
 export default function Dashboard() {
   const [_, setLocation] = useLocation();
@@ -14,14 +15,13 @@ export default function Dashboard() {
   });
 
   const handleLogout = () => {
-    // Clear local storage to ensure no stale state remains
-    localStorage.removeItem('auth0.is.authenticated');
-    // Properly logout and redirect to home
+    // Clear query cache
+    queryClient.clear();
+
+    // Logout and redirect to home
     logout({ 
       logoutParams: {
         returnTo: window.location.origin,
-        // This ensures we get a fresh login state
-        federated: true
       }
     });
   };
@@ -82,27 +82,24 @@ export default function Dashboard() {
         <Card>
           <CardContent className="py-6">
             <div className="space-y-4">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <Users className="h-8 w-8 text-muted-foreground" />
-                  <div>
-                    <p className="font-medium">Acme Corporation</p>
-                    <p className="text-sm text-muted-foreground">acme.com</p>
+              {clients && clients.length > 0 ? (
+                clients.map((client) => (
+                  <div key={client.id} className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <Users className="h-8 w-8 text-muted-foreground" />
+                      <div>
+                        <p className="font-medium">{client.name}</p>
+                        <p className="text-sm text-muted-foreground">{client.companyUrl}</p>
+                      </div>
+                    </div>
+                    <span className={`text-sm ${client.status === 'active' ? 'text-green-500' : 'text-orange-500'}`}>
+                      {client.status === 'active' ? 'Active' : 'Pending'}
+                    </span>
                   </div>
-                </div>
-                <span className="text-sm text-green-500">Active</span>
-              </div>
-
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <Users className="h-8 w-8 text-muted-foreground" />
-                  <div>
-                    <p className="font-medium">TechStart Inc</p>
-                    <p className="text-sm text-muted-foreground">techstart.io</p>
-                  </div>
-                </div>
-                <span className="text-sm text-orange-500">Pending</span>
-              </div>
+                ))
+              ) : (
+                <p className="text-muted-foreground text-center py-4">No clients yet</p>
+              )}
             </div>
           </CardContent>
         </Card>
