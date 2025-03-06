@@ -3,20 +3,33 @@ import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { insertClientSchema } from "@shared/schema";
 import { fromZodError } from "zod-validation-error";
+import { z } from "zod";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Client creation endpoint
   app.post("/api/clients", async (req, res) => {
     try {
-      console.log('Received client data:', req.body);
-      const clientData = insertClientSchema.parse(req.body);
-      console.log('Validated client data:', clientData);
-      const client = await storage.createClient(clientData);
+      console.log('Received request body:', req.body);
+
+      // Validate the incoming data
+      const validatedData = insertClientSchema.safeParse(req.body);
+
+      if (!validatedData.success) {
+        console.error('Validation error:', validatedData.error);
+        const validationError = fromZodError(validatedData.error);
+        return res.status(400).json({ 
+          error: 'Validation failed',
+          details: validationError.message
+        });
+      }
+
+      // Create client with validated data
+      const client = await storage.createClient(validatedData.data);
       console.log('Created client:', client);
       res.status(201).json(client);
     } catch (error) {
       console.error('Client creation error:', error);
-      if (error.name === 'ZodError') {
+      if (error instanceof z.ZodError) {
         const validationError = fromZodError(error);
         return res.status(400).json({ 
           error: 'Validation failed',
@@ -25,7 +38,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       res.status(500).json({ 
         error: "Failed to create client",
-        message: error.message 
+        message: error instanceof Error ? error.message : 'Unknown error occurred'
       });
     }
   });
@@ -39,7 +52,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.error('Error fetching clients:', error);
       res.status(500).json({ 
         error: "Failed to fetch clients",
-        message: error.message 
+        message: error instanceof Error ? error.message : 'Unknown error occurred'
       });
     }
   });
@@ -56,7 +69,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.error('Error updating client status:', error);
       res.status(404).json({ 
         error: "Failed to update client",
-        message: error.message 
+        message: error instanceof Error ? error.message : 'Unknown error occurred'
       });
     }
   });

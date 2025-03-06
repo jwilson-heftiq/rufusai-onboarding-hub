@@ -42,13 +42,16 @@ export default function ClientInfo() {
   const onSubmit = async (data: InsertClient) => {
     try {
       const submissionData = {
-        ...data,
+        name: data.name,
+        companyUrl: data.companyUrl,
+        apiKey: data.apiKey,
         services: ["API Integration", "Data Analytics Dashboard"]
       };
-      console.log('Form data to be submitted:', submissionData);
+      console.log('Preparing to submit form data:', submissionData);
       await mutation.mutateAsync(submissionData);
     } catch (error) {
       console.error('Form submission error:', error);
+      // Error will be handled by mutation.onError
     }
   };
 

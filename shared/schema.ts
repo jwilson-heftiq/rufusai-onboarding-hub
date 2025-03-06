@@ -12,16 +12,19 @@ export const clients = pgTable("clients", {
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
-export const insertClientSchema = createInsertSchema(clients, {
-  name: z.string().min(1, "Name is required"),
-  companyUrl: z.string().min(1, "Reference ID is required"),
-  apiKey: z.string().min(1, "API key is required"),
-  services: z.array(z.string()).min(1, "At least one service must be selected"),
-}).omit({ 
-  id: true,
-  status: true,
-  createdAt: true,
-});
+// Define a schema for client creation
+export const insertClientSchema = createInsertSchema(clients)
+  .extend({
+    name: z.string().min(1, "Name is required"),
+    companyUrl: z.string().min(1, "Reference ID is required"),
+    apiKey: z.string().min(1, "API key is required"),
+    services: z.array(z.string()).default(["API Integration", "Data Analytics Dashboard"]),
+  })
+  .omit({ 
+    id: true,
+    status: true,
+    createdAt: true,
+  });
 
 export type InsertClient = z.infer<typeof insertClientSchema>;
 export type Client = typeof clients.$inferSelect;
