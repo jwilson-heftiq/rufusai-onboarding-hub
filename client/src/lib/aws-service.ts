@@ -61,7 +61,9 @@ class AWSService {
         body: new URLSearchParams({
           grant_type: 'client_credentials',
           scope: 'default-m2m-resource-server-e-pghm/read'
-        })
+        }),
+        mode: 'cors',
+        credentials: 'include'
       });
 
       const responseText = await response.text();
@@ -128,8 +130,11 @@ class AWSService {
           headers: {
             'Authorization': `Bearer ${token}`,
             'Content-Type': 'application/json',
+            'Accept': 'application/json'
           },
-          body: JSON.stringify(requestBody)
+          body: JSON.stringify(requestBody),
+          mode: 'cors',
+          credentials: 'include'
         });
 
         const responseText = await response.text();
