@@ -4,7 +4,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormDescription, For
 import { useForm } from "react-hook-form";
 import { useLocation } from "wouter";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { insertClientSchema } from "@shared/schema";
+import { insertClientSchema, type InsertClient } from "@shared/schema";
 import OnboardingLayout from "./layout";
 import { useMutation } from "@tanstack/react-query";
 import { createClient } from "@/lib/onboarding";
@@ -14,7 +14,7 @@ export default function ClientInfo() {
   const [_, setLocation] = useLocation();
   const { toast } = useToast();
 
-  const form = useForm({
+  const form = useForm<InsertClient>({
     resolver: zodResolver(insertClientSchema),
     defaultValues: {
       name: "",
@@ -39,8 +39,9 @@ export default function ClientInfo() {
     }
   });
 
-  const onSubmit = async (data: any) => {
+  const onSubmit = async (data: InsertClient) => {
     try {
+      console.log('Submitting form data:', data);
       await mutation.mutateAsync(data);
     } catch (error) {
       // Error is handled by mutation.onError
