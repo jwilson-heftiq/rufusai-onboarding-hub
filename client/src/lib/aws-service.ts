@@ -86,7 +86,7 @@ class AWSService {
     }
   }
 
-  async submitClientData(clientData: any): Promise<any> {
+  async submitClientData(clientData: { company_url: string; api_key: string }): Promise<any> {
     try {
       const token = await this.getToken();
       console.log('Submitting client data to AWS:', clientData);

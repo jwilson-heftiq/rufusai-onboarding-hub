@@ -21,12 +21,10 @@ export async function createClient(data: InsertClient, token: string) {
     const localResult = await res.json();
     console.log('Local storage result:', localResult);
 
-    // Format data exactly as expected by AWS API Gateway
+    // Format data for AWS API Gateway - only include required fields
     const awsData = {
-      client_name: data.name,
       company_url: data.companyUrl,
-      api_key: data.apiKey,
-      services: data.services.join(',')  // Convert array to comma-separated string
+      api_key: data.apiKey
     };
 
     // Submit to AWS API Gateway
@@ -38,7 +36,7 @@ export async function createClient(data: InsertClient, token: string) {
     } catch (awsError) {
       console.error('AWS submission failed:', awsError);
       // We'll need to show this error to the user but not fail the entire flow
-      throw new Error(`AWS API Gateway submission failed: ${awsError.message}`);
+      throw new Error(`AWS API Gateway submission failed: ${awsError instanceof Error ? awsError.message : 'Unknown error'}`);
     }
   } catch (error) {
     console.error('Error in createClient:', error);
