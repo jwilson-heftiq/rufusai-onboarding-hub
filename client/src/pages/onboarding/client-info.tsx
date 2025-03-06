@@ -77,12 +77,12 @@ export default function ClientInfo() {
               name="companyUrl"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Company URL</FormLabel>
+                  <FormLabel>Company Reference</FormLabel>
                   <FormControl>
-                    <Input {...field} placeholder="https://" />
+                    <Input {...field} placeholder="Enter reference ID" />
                   </FormControl>
                   <FormDescription>
-                    Enter your company's website URL
+                    Enter the company's reference identifier (e.g. ACME-2024)
                   </FormDescription>
                   <FormMessage />
                 </FormItem>

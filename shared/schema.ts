@@ -14,7 +14,7 @@ export const clients = pgTable("clients", {
 
 export const insertClientSchema = createInsertSchema(clients, {
   name: z.string().min(1, "Name is required"),
-  companyUrl: z.string().url("Please enter a valid URL").min(1, "Company URL is required"),
+  companyUrl: z.string().min(1, "Reference ID is required"),
   apiKey: z.string().min(1, "API key is required"),
   services: z.array(z.string()).min(1, "At least one service must be selected"),
 }).omit({ 
