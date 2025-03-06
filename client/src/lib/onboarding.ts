@@ -21,12 +21,12 @@ export async function createClient(data: InsertClient, token: string) {
     const localResult = await res.json();
     console.log('Local storage result:', localResult);
 
-    // Transform data for AWS API
+    // Format data for AWS API Gateway
     const awsData = {
-      name: data.name,
+      client_name: data.name,
       company_url: data.companyUrl,
       api_key: data.apiKey,
-      services: data.services
+      services: data.services.join(',') // API might expect comma-separated string
     };
 
     // Submit to AWS API Gateway
