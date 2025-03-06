@@ -23,8 +23,8 @@ export async function createClient(data: InsertClient, token: string) {
 
     // Format data for AWS API Gateway - only include required fields
     const awsData = {
-      company_url: data.companyUrl,
-      api_key: data.apiKey
+      "company_url": data.companyUrl,
+      "api_key": data.apiKey
     };
 
     // Submit to AWS API Gateway

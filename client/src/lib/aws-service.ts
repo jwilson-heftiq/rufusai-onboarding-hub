@@ -6,6 +6,11 @@ interface OAuthToken {
   token_type: string;
 }
 
+interface ApiRequestData {
+  "company_url": string;
+  "api_key": string;
+}
+
 class AWSService {
   private token: OAuthToken | null = null;
   private tokenExpiry: Date | null = null;
@@ -91,13 +96,21 @@ class AWSService {
       const token = await this.getToken();
       console.log('Submitting client data to AWS:', clientData);
 
+      // Format request body with explicitly quoted keys
+      const requestBody: ApiRequestData = {
+        "company_url": clientData.company_url,
+        "api_key": clientData.api_key
+      };
+
+      console.log('AWS API request body:', JSON.stringify(requestBody, null, 2));
+
       const response = await fetch('https://cgm4gnmhk1.execute-api.us-east-1.amazonaws.com/v1/onboard', {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(clientData)
+        body: JSON.stringify(requestBody)
       });
 
       const responseText = await response.text();
