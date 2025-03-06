@@ -20,7 +20,7 @@ export default function ClientInfo() {
       name: "",
       companyUrl: "",
       apiKey: "",
-      services: ["API Integration", "Data Analytics Dashboard"]
+      services: ["API Integration", "Data Analytics Dashboard"] // Set default services
     }
   });
 
@@ -42,9 +42,11 @@ export default function ClientInfo() {
   const onSubmit = async (data: InsertClient) => {
     try {
       console.log('Submitting form data:', data);
-      await mutation.mutateAsync(data);
+      await mutation.mutateAsync({
+        ...data,
+        services: ["API Integration", "Data Analytics Dashboard"] // Ensure services are set
+      });
     } catch (error) {
-      // Error is handled by mutation.onError
       console.error('Form submission error:', error);
     }
   };
