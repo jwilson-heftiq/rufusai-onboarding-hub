@@ -21,25 +21,24 @@ export async function createClient(data: InsertClient, token: string) {
     const localResult = await res.json();
     console.log('Local storage result:', localResult);
 
-    // Format data for AWS API Gateway
+    // Format data exactly as expected by AWS API Gateway
     const awsData = {
       client_name: data.name,
       company_url: data.companyUrl,
       api_key: data.apiKey,
-      services: data.services.join(',')
+      services: data.services.join(',')  // Convert array to comma-separated string
     };
 
     // Submit to AWS API Gateway
     try {
       console.log('Submitting to AWS:', awsData);
-      await awsService.submitClientData(awsData);
-      console.log('AWS submission successful');
-
+      const awsResult = await awsService.submitClientData(awsData);
+      console.log('AWS submission successful:', awsResult);
       return localResult;
     } catch (awsError) {
       console.error('AWS submission failed:', awsError);
-      // Since local storage succeeded, we'll show an error but not fail completely
-      throw new Error('Client created but AWS sync failed. Please try again later.');
+      // We'll need to show this error to the user but not fail the entire flow
+      throw new Error(`AWS API Gateway submission failed: ${awsError.message}`);
     }
   } catch (error) {
     console.error('Error in createClient:', error);
