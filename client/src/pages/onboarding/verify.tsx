@@ -21,14 +21,19 @@ export default function Verify() {
               <p className="font-medium">Acme Corporation</p>
             </div>
             <div>
-              <p className="text-sm text-muted-foreground">Company Reference</p>
-              <p className="font-medium">ACME-2024</p>
+              <p className="text-sm text-muted-foreground">Company URL</p>
+              <p className="font-medium">www.acmecorp.com</p>
             </div>
           </div>
 
           <div className="p-4 bg-muted rounded-lg">
             <p className="text-sm text-muted-foreground">API Key</p>
             <p className="font-medium">••••••••4289</p>
+          </div>
+
+          <div className="p-4 bg-muted rounded-lg">
+            <p className="text-sm text-muted-foreground">Created At</p>
+            <p className="font-medium">{new Date().toLocaleString()}</p>
           </div>
 
           <div className="p-4 bg-muted rounded-lg">

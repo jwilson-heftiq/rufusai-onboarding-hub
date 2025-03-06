@@ -1,4 +1,4 @@
-import { pgTable, text, serial } from "drizzle-orm/pg-core";
+import { pgTable, text, serial, timestamp } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
@@ -9,6 +9,7 @@ export const clients = pgTable("clients", {
   apiKey: text("api_key").notNull(),
   services: text("services").array().notNull(),
   status: text("status").notNull().default("pending"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
 export const insertClientSchema = createInsertSchema(clients, {
@@ -19,6 +20,7 @@ export const insertClientSchema = createInsertSchema(clients, {
 }).omit({ 
   id: true,
   status: true,
+  createdAt: true,
 });
 
 export type InsertClient = z.infer<typeof insertClientSchema>;

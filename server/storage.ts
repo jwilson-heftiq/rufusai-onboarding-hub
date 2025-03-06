@@ -32,6 +32,7 @@ export class MemStorage implements IStorage {
       ...insertClient,
       services,
       status: "pending",
+      createdAt: new Date(),
     };
 
     this.clients.set(id, client);
