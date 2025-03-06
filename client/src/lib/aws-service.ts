@@ -14,10 +14,15 @@ class AWSService {
     try {
       // Return existing token if still valid
       if (this.token && this.tokenExpiry && this.tokenExpiry > new Date()) {
+        console.log('Using existing OAuth token');
         return this.token.access_token;
       }
 
-      const response = await fetch(import.meta.env.AWS_OAUTH_TOKEN_URL, {
+      console.log('Requesting new OAuth token...');
+      const tokenUrl = import.meta.env.AWS_OAUTH_TOKEN_URL;
+      console.log('Token URL:', tokenUrl);
+
+      const response = await fetch(tokenUrl, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
@@ -30,17 +35,14 @@ class AWSService {
         })
       });
 
+      const responseText = await response.text();
+      console.log('OAuth response:', responseText);
+
       if (!response.ok) {
-        const errorText = await response.text();
-        console.error('OAuth token error:', {
-          status: response.status,
-          statusText: response.statusText,
-          body: errorText
-        });
-        throw new Error(`Failed to obtain OAuth token: ${response.status} - ${errorText}`);
+        throw new Error(`Failed to obtain OAuth token: ${response.status} - ${responseText}`);
       }
 
-      const tokenData = await response.json();
+      const tokenData = JSON.parse(responseText);
       this.token = tokenData;
       this.tokenExpiry = new Date(Date.now() + ((tokenData.expires_in - 60) * 1000));
 
@@ -48,7 +50,7 @@ class AWSService {
       return this.token.access_token;
     } catch (error) {
       console.error('Error obtaining OAuth token:', error);
-      throw new Error('Failed to authenticate with AWS services');
+      throw error;
     }
   }
 
@@ -66,21 +68,18 @@ class AWSService {
         body: JSON.stringify(clientData)
       });
 
+      const responseText = await response.text();
+      console.log('AWS API raw response:', responseText);
+
       if (!response.ok) {
-        const errorText = await response.text();
-        console.error('AWS API Error:', {
-          status: response.status,
-          statusText: response.statusText,
-          body: errorText
-        });
-        throw new Error(`AWS API request failed: ${response.status} - ${errorText}`);
+        throw new Error(`AWS API request failed: ${response.status} - ${responseText}`);
       }
 
-      const result = await response.json();
-      console.log('AWS API response:', result);
+      const result = responseText ? JSON.parse(responseText) : null;
+      console.log('AWS API parsed response:', result);
       return result;
     } catch (error) {
-      console.error('Failed to submit client data to AWS:', error);
+      console.error('Error submitting client data to AWS:', error);
       throw error;
     }
   }
