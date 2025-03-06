@@ -2,9 +2,17 @@ import { Button } from "@/components/ui/button";
 import { useLocation } from "wouter";
 import OnboardingLayout from "./layout";
 import { CheckCircle2 } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import type { Client } from "@shared/schema";
 
 export default function Success() {
   const [_, setLocation] = useLocation();
+  const { data: clients } = useQuery<Client[]>({
+    queryKey: ["/api/clients"]
+  });
+
+  // Get the most recently created client
+  const latestClient = clients ? clients[clients.length - 1] : null;
 
   return (
     <OnboardingLayout>
@@ -20,15 +28,15 @@ export default function Success() {
         <div className="grid grid-cols-2 gap-4 text-left mb-8">
           <div className="p-4 bg-muted rounded-lg">
             <p className="text-sm text-muted-foreground">Client Name</p>
-            <p className="font-medium">Acme Corporation</p>
+            <p className="font-medium">{latestClient?.name || "Not available"}</p>
           </div>
           <div className="p-4 bg-muted rounded-lg">
             <p className="text-sm text-muted-foreground">Company Reference</p>
-            <p className="font-medium">ACME-2024</p>
+            <p className="font-medium">{latestClient?.companyUrl || "Not available"}</p>
           </div>
           <div className="col-span-2 p-4 bg-muted rounded-lg">
             <p className="text-sm text-muted-foreground">API Key</p>
-            <p className="font-medium">••••••••4289</p>
+            <p className="font-medium">••••••••{latestClient?.apiKey.slice(-4) || "####"}</p>
           </div>
         </div>
 

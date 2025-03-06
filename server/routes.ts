@@ -1,7 +1,7 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { apiRequestSchema, insertClientSchema } from "@shared/schema";
+import { insertClientSchema } from "@shared/schema";
 import { fromZodError } from "zod-validation-error";
 import { z } from "zod";
 
@@ -11,8 +11,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       console.log('Received request body:', req.body);
 
-      // Validate the incoming data against API schema
-      const validatedData = apiRequestSchema.safeParse(req.body);
+      // Validate the incoming data against full schema
+      const validatedData = insertClientSchema.safeParse(req.body);
 
       if (!validatedData.success) {
         console.error('Validation error:', validatedData.error);
@@ -24,12 +24,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       // Create client with validated data
-      const client = await storage.createClient({
-        name: "Pending Client",
-        companyUrl: validatedData.data.company_url,
-        apiKey: validatedData.data.api_key,
-        services: ["API Integration", "Data Analytics Dashboard"]
-      });
+      const client = await storage.createClient(validatedData.data);
       console.log('Created client:', client);
       res.status(201).json(client);
     } catch (error) {

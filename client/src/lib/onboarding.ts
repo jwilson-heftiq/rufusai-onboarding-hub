@@ -10,11 +10,14 @@ export async function createClient(data: InsertClient, token: string) {
     try {
       // Transform data to match API schema
       const apiData = {
+        name: data.name,
         company_url: data.companyUrl,
-        api_key: data.apiKey
+        api_key: data.apiKey,
+        services: data.services
       };
 
-      const res = await apiRequest("POST", "/api/clients", apiData, token);
+      // Send full data to local storage
+      const res = await apiRequest("POST", "/api/clients", data, token);
       const responseText = await res.text();
 
       if (!res.ok) {
