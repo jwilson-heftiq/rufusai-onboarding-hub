@@ -8,8 +8,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Client creation endpoint
   app.post("/api/clients", async (req, res) => {
     try {
+      console.log('Received client data:', req.body);
       const clientData = insertClientSchema.parse(req.body);
+      console.log('Validated client data:', clientData);
       const client = await storage.createClient(clientData);
+      console.log('Created client:', client);
       res.status(201).json(client);
     } catch (error) {
       console.error('Client creation error:', error);
