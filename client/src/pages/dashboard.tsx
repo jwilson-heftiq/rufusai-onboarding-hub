@@ -1,15 +1,25 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { useQuery } from "@tanstack/react-query";
-import { Database } from "lucide-react";
+import { Database, LogOut } from "lucide-react";
 import { useLocation } from "wouter";
 import { Plus, Users, Zap, Clock } from "lucide-react";
+import { useAuth0 } from "@auth0/auth0-react";
 
 export default function Dashboard() {
   const [_, setLocation] = useLocation();
+  const { logout } = useAuth0();
   const { data: clients } = useQuery({
     queryKey: ["/api/clients"]
   });
+
+  const handleLogout = () => {
+    logout({ 
+      logoutParams: {
+        returnTo: window.location.origin 
+      }
+    });
+  };
 
   return (
     <div className="min-h-screen bg-background">
@@ -19,9 +29,14 @@ export default function Dashboard() {
             <Database className="h-6 w-6" />
             <span className="font-semibold">Rufus Labs Onboarding</span>
           </div>
-          <Button onClick={() => setLocation("/onboard/client-info")}>
-            <Plus className="mr-2 h-4 w-4" /> Add New Client
-          </Button>
+          <div className="flex items-center gap-2">
+            <Button onClick={() => setLocation("/onboard/client-info")}>
+              <Plus className="mr-2 h-4 w-4" /> Add New Client
+            </Button>
+            <Button variant="outline" onClick={handleLogout}>
+              <LogOut className="mr-2 h-4 w-4" /> Logout
+            </Button>
+          </div>
         </div>
       </div>
 
