@@ -14,9 +14,14 @@ export default function Dashboard() {
   });
 
   const handleLogout = () => {
+    // Clear local storage to ensure no stale state remains
+    localStorage.removeItem('auth0.is.authenticated');
+    // Properly logout and redirect to home
     logout({ 
       logoutParams: {
-        returnTo: window.location.origin 
+        returnTo: window.location.origin,
+        // This ensures we get a fresh login state
+        federated: true
       }
     });
   };

@@ -29,7 +29,14 @@ function Router() {
   return (
     <Switch>
       <Route path="/login" component={Login} />
-      <Route path="/callback" component={Login} />
+      <Route path="/callback" component={() => {
+        // The callback route should just show loading while Auth0 handles the response
+        return (
+          <div className="flex items-center justify-center min-h-screen">
+            <div className="animate-spin h-8 w-8 border-4 border-primary border-t-transparent rounded-full"></div>
+          </div>
+        );
+      }} />
       <Route path="/dashboard" component={() => <ProtectedRoute component={Dashboard} />} />
       {/* Onboarding routes */}
       <Route path="/onboard/client-info" component={() => <ProtectedRoute component={ClientInfo} />} />
@@ -60,6 +67,7 @@ export default function App() {
       }}
       cacheLocation="localstorage"
       useRefreshTokens={true}
+      useRefreshTokensFallback={true}
     >
       <QueryClientProvider client={queryClient}>
         <Router />
