@@ -31,24 +31,29 @@ class AWSService {
         throw new Error('AWS OAuth credentials are not properly configured');
       }
 
+      // Create authorization header
+      const authHeader = 'Basic ' + btoa(`${clientId}:${clientSecret}`);
+
       const response = await fetch(tokenUrl, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
+          'Authorization': authHeader
         },
         body: new URLSearchParams({
           grant_type: 'client_credentials',
-          client_id: clientId,
-          client_secret: clientSecret,
           scope: 'default-m2m-resource-server-e-pghm/read'
         })
       });
 
       const responseText = await response.text();
-      console.log('OAuth response text:', responseText);
+      console.log('OAuth response status:', response.status);
+      console.log('OAuth response headers:', Object.fromEntries(response.headers.entries()));
 
-      if (!response.ok) {
-        throw new Error(`Failed to obtain OAuth token: ${response.status} - ${responseText}`);
+      // Check if response looks like HTML
+      if (responseText.trim().startsWith('<!DOCTYPE') || responseText.trim().startsWith('<html')) {
+        console.error('Received HTML response instead of JSON:', responseText.substring(0, 200));
+        throw new Error('Invalid OAuth response format: received HTML instead of JSON');
       }
 
       try {
@@ -59,6 +64,7 @@ class AWSService {
         return this.token.access_token;
       } catch (parseError) {
         console.error('Failed to parse OAuth response:', parseError);
+        console.error('Raw response:', responseText);
         throw new Error('Invalid OAuth response format');
       }
     } catch (error) {
@@ -82,6 +88,7 @@ class AWSService {
       });
 
       const responseText = await response.text();
+      console.log('AWS API response status:', response.status);
       console.log('AWS API response text:', responseText);
 
       if (!response.ok) {
