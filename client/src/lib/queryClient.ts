@@ -1,8 +1,15 @@
 import { QueryClient, QueryFunction } from "@tanstack/react-query";
+import { useAuth0 } from "@auth0/auth0-react";
+import { useState, useEffect } from "react";
 
 async function throwIfResNotOk(res: Response) {
   if (!res.ok) {
-    const text = (await res.text()) || res.statusText;
+    const text = await res.text();
+    console.error('Response error:', {
+      status: res.status,
+      statusText: res.statusText,
+      body: text
+    });
     throw new Error(`${res.status}: ${text}`);
   }
 }
@@ -11,16 +18,28 @@ export async function apiRequest(
   method: string,
   url: string,
   data?: unknown | undefined,
+  token?: string,
 ): Promise<Response> {
-  const res = await fetch(url, {
-    method,
-    headers: data ? { "Content-Type": "application/json" } : {},
-    body: data ? JSON.stringify(data) : undefined,
-    credentials: "include",
-  });
+  try {
+    console.log(`Making ${method} request to ${url} with data:`, data);
+    const headers: Record<string, string> = {
+      ...(data ? { "Content-Type": "application/json" } : {}),
+      ...(token ? { "Authorization": `Bearer ${token}` } : {})
+    };
 
-  await throwIfResNotOk(res);
-  return res;
+    const res = await fetch(url, {
+      method,
+      headers,
+      body: data ? JSON.stringify(data) : undefined,
+      credentials: "include",
+    });
+
+    await throwIfResNotOk(res);
+    return res;
+  } catch (error) {
+    console.error('API request failed:', error);
+    throw error;
+  }
 }
 
 type UnauthorizedBehavior = "returnNull" | "throw";

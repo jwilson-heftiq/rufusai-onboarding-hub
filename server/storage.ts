@@ -21,22 +21,30 @@ export class MemStorage implements IStorage {
   }
 
   async createClient(insertClient: InsertClient): Promise<Client> {
-    const id = this.currentId++;
-    // Ensure services is an array
-    const services = Array.isArray(insertClient.services) 
-      ? insertClient.services 
-      : [];
+    try {
+      console.log('Creating client with data:', insertClient);
+      const id = this.currentId++;
 
-    const client: Client = {
-      id,
-      ...insertClient,
-      services,
-      status: "pending",
-      createdAt: new Date(),
-    };
+      // Ensure services is an array
+      const services = Array.isArray(insertClient.services) 
+        ? insertClient.services 
+        : [];
 
-    this.clients.set(id, client);
-    return client;
+      const client: Client = {
+        id,
+        ...insertClient,
+        services,
+        status: "pending",
+        createdAt: new Date(),
+      };
+
+      console.log('Generated client object:', client);
+      this.clients.set(id, client);
+      return client;
+    } catch (error) {
+      console.error('Error in createClient:', error);
+      throw new Error(`Failed to create client: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    }
   }
 
   async updateClientStatus(id: number, status: string): Promise<Client> {

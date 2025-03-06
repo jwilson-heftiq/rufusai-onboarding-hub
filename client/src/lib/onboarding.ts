@@ -2,18 +2,25 @@ import { apiRequest } from "./queryClient";
 import { awsService } from "./aws-service";
 import type { InsertClient } from "@shared/schema";
 
-export async function createClient(data: InsertClient) {
+export async function createClient(data: InsertClient, token: string) {
   try {
     console.log('Creating client with data:', data);
 
     // First try local storage
     try {
-      const res = await apiRequest("POST", "/api/clients", data);
+      const res = await apiRequest("POST", "/api/clients", data, token);
+      const responseText = await res.text();
+
       if (!res.ok) {
-        const errorText = await res.text();
-        throw new Error(`API request failed: ${res.status} - ${errorText}`);
+        console.error('API Response:', {
+          status: res.status,
+          statusText: res.statusText,
+          body: responseText
+        });
+        throw new Error(`API request failed: ${res.status} - ${responseText}`);
       }
-      const localResult = await res.json();
+
+      const localResult = responseText ? JSON.parse(responseText) : null;
       console.log('Local storage result:', localResult);
 
       // Then try AWS in the background
@@ -31,7 +38,7 @@ export async function createClient(data: InsertClient) {
     }
   } catch (error) {
     console.error('Error creating client:', error);
-    throw new Error(error instanceof Error ? error.message : 'Failed to create client. Please try again.');
+    throw error;
   }
 }
 

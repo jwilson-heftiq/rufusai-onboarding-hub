@@ -9,10 +9,12 @@ import OnboardingLayout from "./layout";
 import { useMutation } from "@tanstack/react-query";
 import { createClient } from "@/lib/onboarding";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth0 } from "@auth0/auth0-react";
 
 export default function ClientInfo() {
   const [_, setLocation] = useLocation();
   const { toast } = useToast();
+  const { getAccessTokenSilently } = useAuth0();
 
   const form = useForm<InsertClient>({
     resolver: zodResolver(insertClientSchema),
@@ -25,7 +27,10 @@ export default function ClientInfo() {
   });
 
   const mutation = useMutation({
-    mutationFn: createClient,
+    mutationFn: async (data: InsertClient) => {
+      const token = await getAccessTokenSilently();
+      return createClient(data, token);
+    },
     onSuccess: () => {
       setLocation("/onboard/verify");
     },
