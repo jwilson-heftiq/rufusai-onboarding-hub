@@ -3,10 +3,11 @@ import { useLocation } from "wouter";
 import OnboardingLayout from "./layout";
 import { CheckCircle2 } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
+import type { Client } from "@shared/schema";
 
 export default function Verify() {
   const [_, setLocation] = useLocation();
-  const { data: clients } = useQuery({
+  const { data: clients } = useQuery<Client[]>({
     queryKey: ["/api/clients"]
   });
 
@@ -25,17 +26,17 @@ export default function Verify() {
           <div className="grid grid-cols-2 gap-4 p-4 bg-muted rounded-lg">
             <div>
               <p className="text-sm text-muted-foreground">Client Name</p>
-              <p className="font-medium">{latestClient?.name}</p>
+              <p className="font-medium">{latestClient?.name || 'Not provided'}</p>
             </div>
             <div>
               <p className="text-sm text-muted-foreground">Reference ID</p>
-              <p className="font-medium">{latestClient?.companyUrl}</p>
+              <p className="font-medium">{latestClient?.companyUrl || 'Not provided'}</p>
             </div>
           </div>
 
           <div className="p-4 bg-muted rounded-lg">
             <p className="text-sm text-muted-foreground">API Key</p>
-            <p className="font-medium">••••••••{latestClient?.apiKey.slice(-4)}</p>
+            <p className="font-medium">••••••••{latestClient?.apiKey.slice(-4) || '####'}</p>
           </div>
 
           <div className="p-4 bg-muted rounded-lg">
@@ -50,7 +51,7 @@ export default function Verify() {
           <div className="p-4 bg-muted rounded-lg">
             <p className="text-sm text-muted-foreground mb-2">Selected Services</p>
             <ul className="space-y-2">
-              {latestClient?.services.map((service, index) => (
+              {latestClient?.services?.map((service: string, index: number) => (
                 <li key={index} className="flex items-center gap-2">
                   <CheckCircle2 className="h-4 w-4" />
                   <span>{service}</span>

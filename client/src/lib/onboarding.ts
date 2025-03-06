@@ -31,7 +31,9 @@ export async function createClient(data: InsertClient, token: string) {
 
       // Then try AWS in the background
       try {
-        await awsService.submitClientData(apiData);
+        console.log('Submitting to AWS:', apiData);
+        const awsResult = await awsService.submitClientData(apiData);
+        console.log('AWS submission result:', awsResult);
       } catch (awsError) {
         console.error('AWS submission failed (non-blocking):', awsError);
         // Don't block the flow for AWS errors

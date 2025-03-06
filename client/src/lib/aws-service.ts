@@ -50,6 +50,7 @@ class AWSService {
     try {
       const token = await this.getToken();
       const baseUrl = import.meta.env.AWS_API_GATEWAY_URL.replace(/\/$/, '');
+      console.log('Making AWS API request to:', `${baseUrl}${path}`);
 
       const response = await fetch(`${baseUrl}${path}`, {
         ...options,
@@ -62,6 +63,11 @@ class AWSService {
 
       if (!response.ok) {
         const errorText = await response.text();
+        console.error('AWS API Error Response:', {
+          status: response.status,
+          statusText: response.statusText,
+          body: errorText
+        });
         throw new Error(`API request failed: ${response.status} - ${errorText}`);
       }
 
@@ -74,23 +80,17 @@ class AWSService {
 
   async submitClientData(clientData: any): Promise<any> {
     try {
-      // First try AWS submission
-      try {
-        const response = await this.makeRequest('/clients', {
-          method: 'POST',
-          body: JSON.stringify(clientData),
-        });
-        return await response.json();
-      } catch (awsError) {
-        console.error('AWS submission failed:', awsError);
-        // Continue with local storage even if AWS fails
-      }
-
-      // Always proceed with local storage
-      return await apiRequest("POST", "/api/clients", clientData).then(res => res.json());
+      console.log('Making AWS API request with data:', clientData);
+      const response = await this.makeRequest('/clients', {
+        method: 'POST',
+        body: JSON.stringify(clientData),
+      });
+      const result = await response.json();
+      console.log('AWS API response:', result);
+      return result;
     } catch (error) {
-      console.error('Error submitting client data:', error);
-      throw new Error('Failed to submit client data. Please try again.');
+      console.error('Error submitting client data to AWS:', error);
+      throw new Error('Failed to submit client data to AWS API Gateway. Please try again.');
     }
   }
 }
