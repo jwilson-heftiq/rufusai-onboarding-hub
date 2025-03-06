@@ -104,7 +104,19 @@ class AWSService {
 
       console.log('AWS API request body:', JSON.stringify(requestBody, null, 2));
 
-      const response = await fetch('https://cgm4gnmhk1.execute-api.us-east-1.amazonaws.com/v1/onboard', {
+      const apiGatewayUrl = import.meta.env.VITE_AWS_API_GATEWAY_URL;
+      if (!apiGatewayUrl) {
+        throw new Error('VITE_AWS_API_GATEWAY_URL environment variable is not set');
+      }
+
+      try {
+        new URL(apiGatewayUrl);
+      } catch (urlError) {
+        console.error('Invalid API Gateway URL format:', apiGatewayUrl);
+        throw new Error('API Gateway URL is not a valid URL format');
+      }
+
+      const response = await fetch(`${apiGatewayUrl}/v1/onboard`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
