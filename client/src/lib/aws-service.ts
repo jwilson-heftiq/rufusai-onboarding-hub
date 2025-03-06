@@ -109,37 +109,48 @@ class AWSService {
         throw new Error('VITE_AWS_API_GATEWAY_URL environment variable is not set');
       }
 
+      // Validate and format the URL
+      let fullUrl: string;
       try {
-        new URL(apiGatewayUrl);
+        const baseUrl = new URL(apiGatewayUrl);
+        // Remove trailing slash if present
+        const cleanBaseUrl = baseUrl.toString().replace(/\/$/, '');
+        fullUrl = `${cleanBaseUrl}/v1/onboard`;
+        console.log('Full API Gateway URL:', fullUrl);
       } catch (urlError) {
         console.error('Invalid API Gateway URL format:', apiGatewayUrl);
         throw new Error('API Gateway URL is not a valid URL format');
       }
 
-      const response = await fetch(`${apiGatewayUrl}/v1/onboard`, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(requestBody)
-      });
-
-      const responseText = await response.text();
-      console.log('AWS API response status:', response.status);
-      console.log('AWS API response text:', responseText);
-
-      if (!response.ok) {
-        throw new Error(`AWS API request failed: ${response.status} - ${responseText}`);
-      }
-
       try {
-        const result = responseText ? JSON.parse(responseText) : null;
-        console.log('AWS API parsed response:', result);
-        return result;
-      } catch (parseError) {
-        console.error('Failed to parse API response:', parseError);
-        throw new Error('Invalid API response format');
+        const response = await fetch(fullUrl, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(requestBody)
+        });
+
+        const responseText = await response.text();
+        console.log('AWS API response status:', response.status);
+        console.log('AWS API response text:', responseText);
+
+        if (!response.ok) {
+          throw new Error(`AWS API request failed: ${response.status} - ${responseText}`);
+        }
+
+        try {
+          const result = responseText ? JSON.parse(responseText) : null;
+          console.log('AWS API parsed response:', result);
+          return result;
+        } catch (parseError) {
+          console.error('Failed to parse API response:', parseError);
+          throw new Error('Invalid API response format');
+        }
+      } catch (fetchError) {
+        console.error('Fetch error:', fetchError);
+        throw new Error(`Failed to make API request: ${fetchError instanceof Error ? fetchError.message : 'Unknown error'}`);
       }
     } catch (error) {
       console.error('Error submitting client data to AWS:', error);
