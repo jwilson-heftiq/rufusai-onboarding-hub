@@ -72,10 +72,7 @@ class AWSService {
       const token = await this.getToken();
       console.log('Submitting client data to AWS:', clientData);
 
-      const apiEndpoint = 'https://cgm4gnmhk1.execute-api.us-east-1.amazonaws.com/v1/onboard';
-      console.log('API Endpoint:', apiEndpoint);
-
-      const response = await fetch(apiEndpoint, {
+      const response = await fetch('https://cgm4gnmhk1.execute-api.us-east-1.amazonaws.com/v1/onboard', {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
