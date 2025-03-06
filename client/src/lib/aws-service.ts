@@ -19,14 +19,14 @@ class AWSService {
       }
 
       console.log('Requesting new OAuth token...');
-      const tokenUrl = import.meta.env.AWS_OAUTH_TOKEN_URL;
+      const tokenUrl = import.meta.env.VITE_AWS_OAUTH_TOKEN_URL;
       if (!tokenUrl) {
-        throw new Error('AWS_OAUTH_TOKEN_URL environment variable is not set');
+        throw new Error('VITE_AWS_OAUTH_TOKEN_URL environment variable is not set');
       }
       console.log('Token URL:', tokenUrl);
 
-      const clientId = import.meta.env.AWS_OAUTH_CLIENT_ID;
-      const clientSecret = import.meta.env.AWS_OAUTH_CLIENT_SECRET;
+      const clientId = import.meta.env.VITE_AWS_OAUTH_CLIENT_ID;
+      const clientSecret = import.meta.env.VITE_AWS_OAUTH_CLIENT_SECRET;
       if (!clientId || !clientSecret) {
         throw new Error('AWS OAuth credentials are not properly configured');
       }
