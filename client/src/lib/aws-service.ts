@@ -26,12 +26,17 @@ class AWSService {
           grant_type: 'client_credentials',
           client_id: import.meta.env.AWS_OAUTH_CLIENT_ID,
           client_secret: import.meta.env.AWS_OAUTH_CLIENT_SECRET,
-          scope: 'api/write'
+          scope: 'default-m2m-resource-server-e-pghm/read'  // Restored original scope
         })
       });
 
       if (!response.ok) {
         const errorText = await response.text();
+        console.error('OAuth token error response:', {
+          status: response.status,
+          statusText: response.statusText,
+          body: errorText
+        });
         throw new Error(`OAuth token request failed: ${response.status} - ${errorText}`);
       }
 
@@ -39,6 +44,7 @@ class AWSService {
       this.token = tokenData;
       this.tokenExpiry = new Date(Date.now() + ((tokenData.expires_in - 60) * 1000));
 
+      console.log('OAuth token obtained successfully');
       return this.token.access_token;
     } catch (error) {
       console.error('Error obtaining OAuth token:', error);
