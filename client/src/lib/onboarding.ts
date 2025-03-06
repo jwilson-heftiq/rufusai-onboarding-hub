@@ -6,49 +6,42 @@ export async function createClient(data: InsertClient, token: string) {
   try {
     console.log('Creating client with data:', data);
 
-    // First try local storage
-    try {
-      // Transform data to match API schema
-      const apiData = {
-        name: data.name,
-        company_url: data.companyUrl,
-        api_key: data.apiKey,
-        services: data.services
-      };
-
-      // Send full data to local storage
-      const res = await apiRequest("POST", "/api/clients", data, token);
-      const responseText = await res.text();
-
-      if (!res.ok) {
-        console.error('API Response:', {
-          status: res.status,
-          statusText: res.statusText,
-          body: responseText
-        });
-        throw new Error(`API request failed: ${res.status} - ${responseText}`);
-      }
-
-      const localResult = responseText ? JSON.parse(responseText) : null;
-      console.log('Local storage result:', localResult);
-
-      // Then try AWS in the background
-      try {
-        console.log('Submitting to AWS:', apiData);
-        const awsResult = await awsService.submitClientData(apiData);
-        console.log('AWS submission result:', awsResult);
-      } catch (awsError) {
-        console.error('AWS submission failed (non-blocking):', awsError);
-        // Don't block the flow for AWS errors
-      }
-
-      return localResult;
-    } catch (error) {
-      console.error('Error in API request:', error);
-      throw error;
+    // First create in local storage
+    const res = await apiRequest("POST", "/api/clients", data, token);
+    if (!res.ok) {
+      const errorText = await res.text();
+      console.error('Local storage error:', {
+        status: res.status,
+        statusText: res.statusText,
+        body: errorText
+      });
+      throw new Error(`Failed to create client: ${res.status} - ${errorText}`);
     }
+
+    const localResult = await res.json();
+    console.log('Local storage result:', localResult);
+
+    // Transform data for AWS API
+    const awsData = {
+      name: data.name,
+      company_url: data.companyUrl,
+      api_key: data.apiKey,
+      services: data.services
+    };
+
+    // Submit to AWS API Gateway
+    try {
+      console.log('Submitting to AWS:', awsData);
+      const awsResult = await awsService.submitClientData(awsData);
+      console.log('AWS submission successful:', awsResult);
+    } catch (awsError) {
+      console.error('AWS submission failed:', awsError);
+      throw new Error('Failed to submit to AWS API Gateway');
+    }
+
+    return localResult;
   } catch (error) {
-    console.error('Error creating client:', error);
+    console.error('Error in createClient:', error);
     throw error;
   }
 }

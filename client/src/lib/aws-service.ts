@@ -26,7 +26,7 @@ class AWSService {
           grant_type: 'client_credentials',
           client_id: import.meta.env.AWS_OAUTH_CLIENT_ID,
           client_secret: import.meta.env.AWS_OAUTH_CLIENT_SECRET,
-          scope: 'default-m2m-resource-server-e-pghm/read'
+          scope: 'api/write'
         })
       });
 
@@ -37,7 +37,7 @@ class AWSService {
 
       const tokenData = await response.json();
       this.token = tokenData;
-      this.tokenExpiry = new Date(Date.now() + ((this.token.expires_in - 60) * 1000));
+      this.tokenExpiry = new Date(Date.now() + ((tokenData.expires_in - 60) * 1000));
 
       return this.token.access_token;
     } catch (error) {
@@ -50,7 +50,16 @@ class AWSService {
     try {
       const token = await this.getToken();
       const baseUrl = import.meta.env.AWS_API_GATEWAY_URL.replace(/\/$/, '');
+
       console.log('Making AWS API request to:', `${baseUrl}${path}`);
+      console.log('Request options:', {
+        ...options,
+        headers: {
+          ...options.headers,
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        }
+      });
 
       const response = await fetch(`${baseUrl}${path}`, {
         ...options,
@@ -63,34 +72,35 @@ class AWSService {
 
       if (!response.ok) {
         const errorText = await response.text();
-        console.error('AWS API Error Response:', {
+        console.error('AWS API Error:', {
           status: response.status,
           statusText: response.statusText,
           body: errorText
         });
-        throw new Error(`API request failed: ${response.status} - ${errorText}`);
+        throw new Error(`AWS API request failed: ${response.status} - ${errorText}`);
       }
 
       return response;
     } catch (error) {
-      console.error('Error making AWS API request:', error);
+      console.error('AWS API request error:', error);
       throw error;
     }
   }
 
   async submitClientData(clientData: any): Promise<any> {
     try {
-      console.log('Making AWS API request with data:', clientData);
+      console.log('Submitting client data to AWS:', clientData);
       const response = await this.makeRequest('/clients', {
         method: 'POST',
         body: JSON.stringify(clientData),
       });
+
       const result = await response.json();
       console.log('AWS API response:', result);
       return result;
     } catch (error) {
-      console.error('Error submitting client data to AWS:', error);
-      throw new Error('Failed to submit client data to AWS API Gateway. Please try again.');
+      console.error('Failed to submit client data to AWS:', error);
+      throw error;
     }
   }
 }

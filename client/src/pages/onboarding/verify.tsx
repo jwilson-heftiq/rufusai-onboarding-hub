@@ -7,12 +7,36 @@ import type { Client } from "@shared/schema";
 
 export default function Verify() {
   const [_, setLocation] = useLocation();
-  const { data: clients } = useQuery<Client[]>({
-    queryKey: ["/api/clients"]
+  const { data: clients, isLoading, error } = useQuery<Client[]>({
+    queryKey: ["/api/clients"],
+    refetchOnMount: true
   });
 
   // Get the most recently created client
   const latestClient = clients ? clients[clients.length - 1] : null;
+
+  if (isLoading) {
+    return (
+      <OnboardingLayout>
+        <div className="flex justify-center items-center min-h-[400px]">
+          <div className="animate-spin h-8 w-8 border-4 border-primary border-t-transparent rounded-full"></div>
+        </div>
+      </OnboardingLayout>
+    );
+  }
+
+  if (error || !latestClient) {
+    return (
+      <OnboardingLayout>
+        <div className="text-center">
+          <p className="text-destructive">Failed to load client information</p>
+          <Button className="mt-4" onClick={() => setLocation("/onboard/client-info")}>
+            Go Back
+          </Button>
+        </div>
+      </OnboardingLayout>
+    );
+  }
 
   return (
     <OnboardingLayout>
@@ -26,32 +50,30 @@ export default function Verify() {
           <div className="grid grid-cols-2 gap-4 p-4 bg-muted rounded-lg">
             <div>
               <p className="text-sm text-muted-foreground">Client Name</p>
-              <p className="font-medium">{latestClient?.name || 'Not provided'}</p>
+              <p className="font-medium">{latestClient.name}</p>
             </div>
             <div>
               <p className="text-sm text-muted-foreground">Reference ID</p>
-              <p className="font-medium">{latestClient?.companyUrl || 'Not provided'}</p>
+              <p className="font-medium">{latestClient.companyUrl}</p>
             </div>
           </div>
 
           <div className="p-4 bg-muted rounded-lg">
             <p className="text-sm text-muted-foreground">API Key</p>
-            <p className="font-medium">••••••••{latestClient?.apiKey.slice(-4) || '####'}</p>
+            <p className="font-medium">••••••••{latestClient.apiKey.slice(-4)}</p>
           </div>
 
           <div className="p-4 bg-muted rounded-lg">
             <p className="text-sm text-muted-foreground">Created At</p>
             <p className="font-medium">
-              {latestClient?.createdAt 
-                ? new Date(latestClient.createdAt).toLocaleString()
-                : new Date().toLocaleString()}
+              {new Date(latestClient.createdAt).toLocaleString()}
             </p>
           </div>
 
           <div className="p-4 bg-muted rounded-lg">
             <p className="text-sm text-muted-foreground mb-2">Selected Services</p>
             <ul className="space-y-2">
-              {latestClient?.services?.map((service: string, index: number) => (
+              {latestClient.services.map((service: string, index: number) => (
                 <li key={index} className="flex items-center gap-2">
                   <CheckCircle2 className="h-4 w-4" />
                   <span>{service}</span>
