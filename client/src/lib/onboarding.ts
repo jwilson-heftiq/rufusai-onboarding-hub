@@ -8,7 +8,13 @@ export async function createClient(data: InsertClient, token: string) {
 
     // First try local storage
     try {
-      const res = await apiRequest("POST", "/api/clients", data, token);
+      // Transform data to match API schema
+      const apiData = {
+        company_url: data.companyUrl,
+        api_key: data.apiKey
+      };
+
+      const res = await apiRequest("POST", "/api/clients", apiData, token);
       const responseText = await res.text();
 
       if (!res.ok) {
@@ -25,7 +31,7 @@ export async function createClient(data: InsertClient, token: string) {
 
       // Then try AWS in the background
       try {
-        await awsService.submitClientData(data);
+        await awsService.submitClientData(apiData);
       } catch (awsError) {
         console.error('AWS submission failed (non-blocking):', awsError);
         // Don't block the flow for AWS errors

@@ -12,7 +12,13 @@ export const clients = pgTable("clients", {
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
-// Define a schema for client creation
+// API request schema only includes company_url and api_key
+export const apiRequestSchema = z.object({
+  company_url: z.string().min(1, "Reference ID is required"),
+  api_key: z.string().min(1, "API key is required"),
+});
+
+// Full client schema for local storage
 export const insertClientSchema = createInsertSchema(clients)
   .extend({
     name: z.string().min(1, "Name is required"),
@@ -27,4 +33,5 @@ export const insertClientSchema = createInsertSchema(clients)
   });
 
 export type InsertClient = z.infer<typeof insertClientSchema>;
+export type ApiRequest = z.infer<typeof apiRequestSchema>;
 export type Client = typeof clients.$inferSelect;
