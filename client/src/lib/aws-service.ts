@@ -125,7 +125,7 @@ class AWSService {
       }
 
       try {
-        const response = await fetch(fullUrl, {
+        const requestConfig = {
           method: 'POST',
           headers: {
             'Authorization': `Bearer ${token}`,
@@ -133,11 +133,21 @@ class AWSService {
             'Accept': 'application/json'
           },
           body: JSON.stringify(requestBody),
-          mode: 'cors'
+          mode: 'cors' as const
+        };
+
+        console.log('Request configuration:', {
+          url: fullUrl,
+          method: requestConfig.method,
+          headers: Object.fromEntries(Object.entries(requestConfig.headers)),
+          bodyLength: requestConfig.body.length
         });
+
+        const response = await fetch(fullUrl, requestConfig);
 
         const responseText = await response.text();
         console.log('AWS API response status:', response.status);
+        console.log('AWS API response headers:', Object.fromEntries(response.headers.entries()));
         console.log('AWS API response text:', responseText);
 
         if (!response.ok) {
