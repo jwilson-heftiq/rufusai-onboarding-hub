@@ -29,24 +29,18 @@ class AWSService {
         throw new Error('VITE_AWS_OAUTH_TOKEN_URL environment variable is not set');
       }
       console.log('OAuth Token URL:', tokenUrl);
-      console.log('Available env vars:', {
-        token_url: import.meta.env.VITE_AWS_OAUTH_TOKEN_URL,
-        client_id: import.meta.env.VITE_AWS_OAUTH_CLIENT_ID,
-        has_secret: !!import.meta.env.VITE_AWS_OAUTH_CLIENT_SECRET
-      });
 
-      // Validate URL format
-      try {
-        new URL(tokenUrl);
-      } catch (urlError) {
-        console.error('Invalid OAuth Token URL format:', tokenUrl);
-        throw new Error('OAuth Token URL is not a valid URL format');
-      }
-
+      // Validate credentials
       const clientId = import.meta.env.VITE_AWS_OAUTH_CLIENT_ID;
       const clientSecret = import.meta.env.VITE_AWS_OAUTH_CLIENT_SECRET;
+
       if (!clientId || !clientSecret) {
         throw new Error('AWS OAuth credentials are not properly configured');
+      }
+
+      // Validate client ID is not the token URL (common misconfiguration)
+      if (clientId.includes('oauth2/token')) {
+        throw new Error('Invalid AWS OAuth Client ID - appears to be the token URL instead of the client ID. Please check your environment configuration.');
       }
 
       // Create authorization header
@@ -63,7 +57,7 @@ class AWSService {
           grant_type: 'client_credentials',
           scope: 'default-m2m-resource-server-e-pghm/read'
         }),
-        mode: 'cors'
+        mode: 'cors' as const
       });
 
       const responseText = await response.text();

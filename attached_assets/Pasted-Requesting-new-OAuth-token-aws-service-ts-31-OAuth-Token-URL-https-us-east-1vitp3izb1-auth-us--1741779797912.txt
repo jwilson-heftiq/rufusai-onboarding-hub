@@ -1,0 +1,71 @@
+Requesting new OAuth token...
+aws-service.ts:31 OAuth Token URL: https://us-east-1vitp3izb1.auth.us-east-1.amazoncognito.com/oauth2/token
+aws-service.ts:32 Available env vars: {token_url: 'https://us-east-1vitp3izb1.auth.us-east-1.amazoncognito.com/oauth2/token', client_id: 'https://us-east-1vitp3izb1.auth.us-east-1.amazoncognito.com/oauth2/token', has_secret: true}client_id: "https://us-east-1vitp3izb1.auth.us-east-1.amazoncognito.com/oauth2/token"has_secret: truetoken_url: "https://us-east-1vitp3izb1.auth.us-east-1.amazoncognito.com/oauth2/token"[[Prototype]]: Object
+aws-service.ts:55 
+            
+            
+           POST https://us-east-1vitp3izb1.auth.us-east-1.amazoncognito.com/oauth2/token 400 (Bad Request)
+getToken @ aws-service.ts:55
+submitClientData @ aws-service.ts:107
+createClient @ onboarding.ts:33
+await in createClient
+mutationFn @ client-info.tsx:32
+await in mutationFn
+fn @ @tanstack_react-query.js?v=4fb16e84:1189
+run @ @tanstack_react-query.js?v=4fb16e84:494
+start @ @tanstack_react-query.js?v=4fb16e84:536
+execute @ @tanstack_react-query.js?v=4fb16e84:1225
+await in execute
+mutate @ @tanstack_react-query.js?v=4fb16e84:2630
+onSubmit @ client-info.tsx:56
+(anonymous) @ chunk-YABUFNLM.js?v=4fb16e84:1675
+await in (anonymous)
+callCallback2 @ chunk-RPCDYKBN.js?v=4fb16e84:3674
+invokeGuardedCallbackDev @ chunk-RPCDYKBN.js?v=4fb16e84:3699
+invokeGuardedCallback @ chunk-RPCDYKBN.js?v=4fb16e84:3733
+invokeGuardedCallbackAndCatchFirstError @ chunk-RPCDYKBN.js?v=4fb16e84:3736
+executeDispatch @ chunk-RPCDYKBN.js?v=4fb16e84:7014
+processDispatchQueueItemsInOrder @ chunk-RPCDYKBN.js?v=4fb16e84:7034
+processDispatchQueue @ chunk-RPCDYKBN.js?v=4fb16e84:7043
+dispatchEventsForPlugins @ chunk-RPCDYKBN.js?v=4fb16e84:7051
+(anonymous) @ chunk-RPCDYKBN.js?v=4fb16e84:7174
+batchedUpdates$1 @ chunk-RPCDYKBN.js?v=4fb16e84:18913
+batchedUpdates @ chunk-RPCDYKBN.js?v=4fb16e84:3579
+dispatchEventForPluginEventSystem @ chunk-RPCDYKBN.js?v=4fb16e84:7173
+dispatchEventWithEnableCapturePhaseSelectiveHydrationWithoutDiscreteEventReplay @ chunk-RPCDYKBN.js?v=4fb16e84:5478
+dispatchEvent @ chunk-RPCDYKBN.js?v=4fb16e84:5472
+dispatchDiscreteEvent @ chunk-RPCDYKBN.js?v=4fb16e84:5449Understand this errorAI
+aws-service.ts:70 OAuth response status: 400
+aws-service.ts:71 OAuth response headers: {cache-control: 'no-cache, no-store, max-age=0, must-revalidate', content-length: '26', content-type: 'application/json;charset=UTF-8', expires: '0', pragma: 'no-cache'}cache-control: "no-cache, no-store, max-age=0, must-revalidate"content-length: "26"content-type: "application/json;charset=UTF-8"expires: "0"pragma: "no-cache"[[Prototype]]: Object
+aws-service.ts:82 Invalid token response: {error: 'invalid_client'}
+getToken @ aws-service.ts:82
+await in getToken
+submitClientData @ aws-service.ts:107
+createClient @ onboarding.ts:33
+await in createClient
+mutationFn @ client-info.tsx:32
+await in mutationFn
+fn @ @tanstack_react-query.js?v=4fb16e84:1189
+run @ @tanstack_react-query.js?v=4fb16e84:494
+start @ @tanstack_react-query.js?v=4fb16e84:536
+execute @ @tanstack_react-query.js?v=4fb16e84:1225
+await in execute
+mutate @ @tanstack_react-query.js?v=4fb16e84:2630
+onSubmit @ client-info.tsx:56
+(anonymous) @ chunk-YABUFNLM.js?v=4fb16e84:1675
+await in (anonymous)
+callCallback2 @ chunk-RPCDYKBN.js?v=4fb16e84:3674
+invokeGuardedCallbackDev @ chunk-RPCDYKBN.js?v=4fb16e84:3699
+invokeGuardedCallback @ chunk-RPCDYKBN.js?v=4fb16e84:3733
+invokeGuardedCallbackAndCatchFirstError @ chunk-RPCDYKBN.js?v=4fb16e84:3736
+executeDispatch @ chunk-RPCDYKBN.js?v=4fb16e84:7014
+processDispatchQueueItemsInOrder @ chunk-RPCDYKBN.js?v=4fb16e84:7034
+processDispatchQueue @ chunk-RPCDYKBN.js?v=4fb16e84:7043
+dispatchEventsForPlugins @ chunk-RPCDYKBN.js?v=4fb16e84:7051
+(anonymous) @ chunk-RPCDYKBN.js?v=4fb16e84:7174
+batchedUpdates$1 @ chunk-RPCDYKBN.js?v=4fb16e84:18913
+batchedUpdates @ chunk-RPCDYKBN.js?v=4fb16e84:3579
+dispatchEventForPluginEventSystem @ chunk-RPCDYKBN.js?v=4fb16e84:7173
+dispatchEventWithEnableCapturePhaseSelectiveHydrationWithoutDiscreteEventReplay @ chunk-RPCDYKBN.js?v=4fb16e84:5478
+dispatchEvent @ chunk-RPCDYKBN.js?v=4fb16e84:5472
+dispatchDiscreteEvent @ chunk-RPCDYKBN.js?v=4fb16e84:5449Understand this errorAI
