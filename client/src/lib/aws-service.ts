@@ -78,6 +78,10 @@ class AWSService {
 
       try {
         const tokenData = JSON.parse(responseText);
+        if (!response.ok) {
+          console.error('OAuth request failed:', tokenData);
+          throw new Error(`OAuth token request failed: ${tokenData.error}`);
+        }
         if (!tokenData.access_token) {
           console.error('OAuth response missing access_token:', tokenData);
           throw new Error('Invalid OAuth response: missing access token');
