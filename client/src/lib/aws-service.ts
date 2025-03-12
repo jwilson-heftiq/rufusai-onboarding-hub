@@ -78,14 +78,6 @@ class AWSService {
 
       try {
         const tokenData = JSON.parse(responseText);
-        if (!response.ok) {
-          console.error('OAuth request failed:', tokenData);
-          throw new Error(`OAuth token request failed: ${tokenData.error}`);
-        }
-        if (!tokenData.access_token) {
-          console.error('OAuth response missing access_token:', tokenData);
-          throw new Error('Invalid OAuth response: missing access token');
-        }
         this.token = tokenData;
         this.tokenExpiry = new Date(Date.now() + ((tokenData.expires_in - 60) * 1000));
         console.log('OAuth token obtained successfully');
@@ -104,10 +96,6 @@ class AWSService {
   async submitClientData(clientData: { company_url: string; api_key: string }): Promise<any> {
     try {
       const token = await this.getToken();
-      if (!token) {
-        throw new Error('Failed to obtain valid OAuth token');
-      }
-      console.log('Successfully obtained OAuth token');
       console.log('Submitting client data to AWS:', clientData);
 
       // Format request body with explicitly quoted keys
