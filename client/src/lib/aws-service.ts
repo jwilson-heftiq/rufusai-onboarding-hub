@@ -78,9 +78,18 @@ class AWSService {
 
       try {
         const tokenData = JSON.parse(responseText);
+        if (!tokenData.access_token) {
+          console.error('Invalid token response:', tokenData);
+          throw new Error('Token response missing access_token');
+        }
+
         this.token = tokenData;
         this.tokenExpiry = new Date(Date.now() + ((tokenData.expires_in - 60) * 1000));
-        console.log('OAuth token obtained successfully');
+        console.log('OAuth token obtained successfully:', {
+          expires_in: tokenData.expires_in,
+          expiry: this.tokenExpiry,
+          token_type: tokenData.token_type
+        });
         return this.token.access_token;
       } catch (parseError) {
         console.error('Failed to parse OAuth response:', parseError);
@@ -96,6 +105,9 @@ class AWSService {
   async submitClientData(clientData: { company_url: string; api_key: string }): Promise<any> {
     try {
       const token = await this.getToken();
+      if (!token) {
+        throw new Error('Failed to obtain valid OAuth token');
+      }
       console.log('Submitting client data to AWS:', clientData);
 
       // Format request body with explicitly quoted keys
