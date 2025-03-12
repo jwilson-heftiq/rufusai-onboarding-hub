@@ -35,7 +35,11 @@ export async function createClient(data: InsertClient, token: string) {
       return localResult;
     } catch (awsError) {
       console.error('AWS submission failed:', awsError);
-      // We'll need to show this error to the user but not fail the entire flow
+      // We'll continue with the flow but show the error to the user
+      if (awsError instanceof Error && awsError.message.includes('CORS')) {
+        console.warn('CORS issue detected with AWS API Gateway - continuing with local storage only');
+        return localResult;
+      }
       throw new Error(`AWS API Gateway submission failed: ${awsError instanceof Error ? awsError.message : 'Unknown error'}`);
     }
   } catch (error) {

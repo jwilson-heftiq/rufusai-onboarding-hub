@@ -164,6 +164,12 @@ class AWSService {
         }
       } catch (fetchError) {
         console.error('Fetch error:', fetchError);
+        if (fetchError instanceof Error && fetchError.message.includes('CORS')) {
+          throw new Error(`CORS error - The AWS API Gateway needs to be configured to allow requests from ${window.location.origin}. Please ensure the following CORS configuration is added to the API Gateway:
+          - Allowed Origins: ${window.location.origin}
+          - Allowed Methods: POST, OPTIONS
+          - Allowed Headers: Authorization, Content-Type, Accept`);
+        }
         throw new Error(`Failed to make API request: ${fetchError instanceof Error ? fetchError.message : 'Unknown error'}`);
       }
     } catch (error) {
