@@ -44,8 +44,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Get all clients
-  app.get("/api/clients", async (_req, res) => {
+  app.get("/api/clients", async (req, res) => {
     try {
+      // Check for Authorization header
+      const authHeader = req.headers.authorization;
+      if (!authHeader) {
+        return res.status(401).json({ error: 'No token provided' });
+      }
+
       const clients = await storage.getAllClients();
       res.json(clients);
     } catch (error) {

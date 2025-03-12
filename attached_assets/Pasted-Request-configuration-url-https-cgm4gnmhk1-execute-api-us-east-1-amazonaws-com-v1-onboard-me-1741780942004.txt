@@ -1,0 +1,33 @@
+Request configuration: {url: 'https://cgm4gnmhk1.execute-api.us-east-1.amazonaws.com/v1/onboard', method: 'POST', headers: {…}, bodyLength: 44}
+aws-service.ts:155 AWS API response status: 200
+aws-service.ts:156 AWS API response headers: {access-control-allow-origin: 'https://8fdfc146-5e8a-4881-b07d-b532ca2d4c4e-00-r7t0pqypytay.kirk.replit.dev', access-control-expose-headers: '*', apigw-requestid: 'HT-XnhcpIAMES6A=', content-length: '63', content-type: 'text/plain; charset=utf-8', …}
+aws-service.ts:157 AWS API response text: "Parameters stored and event scheduled successfully for testco"
+aws-service.ts:165 AWS API parsed response: Parameters stored and event scheduled successfully for testco
+onboarding.ts:34 AWS submission successful: Parameters stored and event scheduled successfully for testco
+queryClient.ts:51 
+            
+            
+           GET https://8fdfc146-5e8a-4881-b07d-b532ca2d4c4e-00-r7t0pqypytay.kirk.replit.dev/api/clients 401 (Unauthorized)
+(anonymous) @ queryClient.ts:51
+fetchFn @ @tanstack_react-query.js?v=4fb16e84:840
+run @ @tanstack_react-query.js?v=4fb16e84:494
+start @ @tanstack_react-query.js?v=4fb16e84:536
+fetch @ @tanstack_react-query.js?v=4fb16e84:926
+executeFetch_fn @ @tanstack_react-query.js?v=4fb16e84:2211
+onSubscribe @ @tanstack_react-query.js?v=4fb16e84:1898
+subscribe @ @tanstack_react-query.js?v=4fb16e84:24
+(anonymous) @ @tanstack_react-query.js?v=4fb16e84:3022
+subscribeToStore @ chunk-RPCDYKBN.js?v=4fb16e84:11984
+commitHookEffectListMount @ chunk-RPCDYKBN.js?v=4fb16e84:16915
+commitPassiveMountOnFiber @ chunk-RPCDYKBN.js?v=4fb16e84:18156
+commitPassiveMountEffects_complete @ chunk-RPCDYKBN.js?v=4fb16e84:18129
+commitPassiveMountEffects_begin @ chunk-RPCDYKBN.js?v=4fb16e84:18119
+commitPassiveMountEffects @ chunk-RPCDYKBN.js?v=4fb16e84:18109
+flushPassiveEffectsImpl @ chunk-RPCDYKBN.js?v=4fb16e84:19490
+flushPassiveEffects @ chunk-RPCDYKBN.js?v=4fb16e84:19447
+commitRootImpl @ chunk-RPCDYKBN.js?v=4fb16e84:19416
+commitRoot @ chunk-RPCDYKBN.js?v=4fb16e84:19277
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js?v=4fb16e84:18895
+flushSyncCallbacks @ chunk-RPCDYKBN.js?v=4fb16e84:9119
+(anonymous) @ chunk-RPCDYKBN.js?v=4fb16e84:18627Understand this errorAI
+queryClient.ts:8 Response error: {status: 401, statusText: 'Unauthorized', body: '{"error":"No token provided"}'}

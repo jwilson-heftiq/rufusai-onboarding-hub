@@ -48,7 +48,7 @@ export async function createClient(data: InsertClient, token: string) {
   }
 }
 
-export async function updateClientStatus(id: number, status: string) {
-  const res = await apiRequest("PATCH", `/api/clients/${id}/status`, { status });
+export async function updateClientStatus(id: number, status: string, token: string) {
+  const res = await apiRequest("PATCH", `/api/clients/${id}/status`, { status }, token);
   return res.json();
 }
