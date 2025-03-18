@@ -7,11 +7,10 @@ import ClientInfo from "@/pages/onboarding/client-info";
 import Verify from "@/pages/onboarding/verify";
 import Success from "@/pages/onboarding/success";
 import Login from "@/pages/login";
-import { Auth0Provider } from "@auth0/auth0-react";
-import { useAuthRedirect } from "./lib/auth";
+import { AuthProvider, useAuthInfo } from "./lib/propelauth";
 
 function ProtectedRoute({ component: Component }: { component: () => JSX.Element }) {
-  const { isLoading } = useAuthRedirect();
+  const { isLoading, isLoggedIn } = useAuthInfo();
 
   if (isLoading) {
     return (
@@ -19,6 +18,10 @@ function ProtectedRoute({ component: Component }: { component: () => JSX.Element
         <div className="animate-spin h-8 w-8 border-4 border-primary border-t-transparent rounded-full"></div>
       </div>
     );
+  }
+
+  if (!isLoggedIn) {
+    return <Login />;
   }
 
   return <Component />;
@@ -29,7 +32,6 @@ function Router() {
     <Switch>
       <Route path="/login" component={Login} />
       <Route path="/callback" component={() => {
-        // The callback route should just show loading while Auth0 handles the response
         return (
           <div className="flex items-center justify-center min-h-screen">
             <div className="animate-spin h-8 w-8 border-4 border-primary border-t-transparent rounded-full"></div>
@@ -47,30 +49,17 @@ function Router() {
 }
 
 export default function App() {
-  const domain = import.meta.env.VITE_AUTH0_DOMAIN;
-  const clientId = import.meta.env.VITE_AUTH0_CLIENT_ID;
-
-  if (!domain || !clientId) {
-    throw new Error('Missing Auth0 configuration');
+  const authUrl = import.meta.env.VITE_PROPELAUTH_URL;
+  if (!authUrl) {
+    throw new Error('VITE_PROPELAUTH_URL environment variable is not set');
   }
 
   return (
-    <Auth0Provider
-      domain={domain}
-      clientId={clientId}
-      authorizationParams={{
-        redirect_uri: `${window.location.origin}/callback`,
-        audience: `https://${domain}/api/v2/`,
-        scope: "openid profile email offline_access"
-      }}
-      cacheLocation="localstorage"
-      useRefreshTokens={true}
-      useRefreshTokensFallback={true}
-    >
+    <AuthProvider authUrl={authUrl}>
       <QueryClientProvider client={queryClient}>
         <Router />
         <Toaster />
       </QueryClientProvider>
-    </Auth0Provider>
+    </AuthProvider>
   );
 }

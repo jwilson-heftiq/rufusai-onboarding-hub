@@ -6,13 +6,12 @@ import { useMutation } from "@tanstack/react-query";
 import { createClient } from "@/lib/onboarding";
 import type { InsertClient } from "@shared/schema";
 import { useToast } from "@/hooks/use-toast";
-import { useAuth0 } from "@auth0/auth0-react";
+import { getAccessToken } from "@/lib/propelauth";
 import { useEffect, useState } from "react";
 
 export default function Verify() {
   const [_, setLocation] = useLocation();
   const { toast } = useToast();
-  const { getAccessTokenSilently } = useAuth0();
   const [pendingClient, setPendingClient] = useState<InsertClient | null>(null);
 
   useEffect(() => {
@@ -28,7 +27,7 @@ export default function Verify() {
 
   const mutation = useMutation({
     mutationFn: async (data: InsertClient) => {
-      const token = await getAccessTokenSilently();
+      const token = await getAccessToken();
       return createClient(data, token);
     },
     onSuccess: () => {
