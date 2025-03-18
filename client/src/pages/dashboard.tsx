@@ -1,12 +1,13 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { useQuery } from "@tanstack/react-query";
-import { Database, LogOut } from "lucide-react";
+import { LogOut } from "lucide-react";
 import { useLocation } from "wouter";
 import { Plus, Users, Zap, Clock } from "lucide-react";
 import { useAuth0 } from "@auth0/auth0-react";
 import { queryClient } from "@/lib/queryClient";
 import { BetaBadge } from "@/components/ui/beta-badge";
+import { Logo } from "@/components/ui/logo";
 
 export default function Dashboard() {
   const [_, setLocation] = useLocation();
@@ -29,7 +30,7 @@ export default function Dashboard() {
       <div className="border-b">
         <div className="flex h-16 items-center px-4 container">
           <div className="flex items-center gap-2 flex-1">
-            <Database className="h-6 w-6" />
+            <Logo size="sm" />
             <span className="font-semibold">RufusAI Onboarding Hub</span>
             <BetaBadge />
           </div>

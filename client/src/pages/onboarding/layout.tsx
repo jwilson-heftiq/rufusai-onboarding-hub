@@ -1,14 +1,14 @@
 import { ReactNode } from "react";
 import { Card } from "@/components/ui/card";
-import { Database } from "lucide-react";
 import { BetaBadge } from "@/components/ui/beta-badge";
+import { Logo } from "@/components/ui/logo";
 
 export default function OnboardingLayout({ children }: { children: ReactNode }) {
   return (
     <div className="min-h-screen bg-background flex flex-col">
       <header className="border-b px-6 py-4">
         <div className="flex items-center gap-2">
-          <Database className="h-6 w-6" />
+          <Logo size="sm" />
           <span className="font-semibold">RufusAI Onboarding Hub</span>
           <BetaBadge />
         </div>
