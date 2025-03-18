@@ -1,4 +1,4 @@
-import { useAuthInfo, useRedirectFunctions } from "@propelauth/react";
+import { useAuth0 } from "@auth0/auth0-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Database, Loader2 } from "lucide-react";
@@ -6,21 +6,32 @@ import { useEffect } from "react";
 import { useLocation } from "wouter";
 
 export default function Login() {
-  const { isLoading, isLoggedIn } = useAuthInfo();
-  const { redirectToLoginPage } = useRedirectFunctions();
+  const { loginWithRedirect, isAuthenticated, isLoading, error } = useAuth0();
   const [_, setLocation] = useLocation();
 
   useEffect(() => {
-    if (isLoggedIn) {
+    if (isAuthenticated) {
       console.log("User authenticated, redirecting to onboarding");
       setLocation("/onboard/client-info");
     }
-  }, [isLoggedIn, setLocation]);
+  }, [isAuthenticated, setLocation]);
 
-  if (isLoading) {
+  if (error) {
+    console.error("Auth0 error:", error);
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+        <Card className="w-full max-w-md p-6">
+          <div className="text-center">
+            <p className="text-destructive">Authentication Error: {error.message}</p>
+            <Button 
+              className="mt-4" 
+              variant="outline" 
+              onClick={() => window.location.reload()}
+            >
+              Try Again
+            </Button>
+          </div>
+        </Card>
       </div>
     );
   }
@@ -41,9 +52,13 @@ export default function Login() {
         <Button 
           className="w-full" 
           onClick={() => {
-            console.log("Initiating PropelAuth login redirect");
-            redirectToLoginPage({
-              postLoginRedirectUrl: "/onboard/client-info"
+            console.log("Initiating passwordless login redirect");
+            loginWithRedirect({
+              authorizationParams: {
+                connection: 'email',
+                prompt: 'login',
+              },
+              appState: { returnTo: "/onboard/client-info" }
             });
           }}
           disabled={isLoading}
@@ -54,7 +69,7 @@ export default function Login() {
               Signing in...
             </>
           ) : (
-            "Sign in"
+            "Sign in with Email"
           )}
         </Button>
       </Card>
