@@ -7,13 +7,12 @@ import ClientInfo from "@/pages/onboarding/client-info";
 import Verify from "@/pages/onboarding/verify";
 import Success from "@/pages/onboarding/success";
 import Login from "@/pages/login";
-import { AuthProvider } from "./lib/propelauth";
-import { useAuthInfo } from "@propelauth/react";
+import { AuthProvider, useAuthInfo } from "./lib/propelauth";
 
 function ProtectedRoute({ component: Component }: { component: () => JSX.Element }) {
-  const { loading, user } = useAuthInfo();
+  const { isLoading, isLoggedIn } = useAuthInfo();
 
-  if (loading) {
+  if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="animate-spin h-8 w-8 border-4 border-primary border-t-transparent rounded-full"></div>
@@ -21,7 +20,7 @@ function ProtectedRoute({ component: Component }: { component: () => JSX.Element
     );
   }
 
-  if (!user) {
+  if (!isLoggedIn) {
     return <Login />;
   }
 
@@ -32,6 +31,14 @@ function Router() {
   return (
     <Switch>
       <Route path="/login" component={Login} />
+      <Route path="/callback" component={() => {
+        return (
+          <div className="flex items-center justify-center min-h-screen">
+            <div className="animate-spin h-8 w-8 border-4 border-primary border-t-transparent rounded-full"></div>
+          </div>
+        );
+      }} />
+      {/* Onboarding routes */}
       <Route path="/onboard/client-info" component={() => <ProtectedRoute component={ClientInfo} />} />
       <Route path="/onboard/verify" component={() => <ProtectedRoute component={Verify} />} />
       <Route path="/onboard/success" component={() => <ProtectedRoute component={Success} />} />
@@ -42,8 +49,13 @@ function Router() {
 }
 
 export default function App() {
+  const authUrl = import.meta.env.VITE_PROPELAUTH_URL;
+  if (!authUrl) {
+    throw new Error('VITE_PROPELAUTH_URL environment variable is not set');
+  }
+
   return (
-    <AuthProvider>
+    <AuthProvider authUrl={authUrl}>
       <QueryClientProvider client={queryClient}>
         <Router />
         <Toaster />

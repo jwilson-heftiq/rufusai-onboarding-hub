@@ -6,16 +6,16 @@ import { useEffect } from "react";
 import { useLocation } from "wouter";
 
 export default function Login() {
-  const { loading: isLoading, user } = useAuthInfo();
-  const { redirectToLogin } = useRedirectFunctions();
+  const { isLoading, isLoggedIn } = useAuthInfo();
+  const { redirectToLoginPage } = useRedirectFunctions();
   const [_, setLocation] = useLocation();
 
   useEffect(() => {
-    if (user) {
+    if (isLoggedIn) {
       console.log("User authenticated, redirecting to onboarding");
       setLocation("/onboard/client-info");
     }
-  }, [user, setLocation]);
+  }, [isLoggedIn, setLocation]);
 
   if (isLoading) {
     return (
@@ -42,8 +42,7 @@ export default function Login() {
           className="w-full" 
           onClick={() => {
             console.log("Initiating PropelAuth login redirect");
-            redirectToLogin({
-              redirectToCurrentPage: true,
+            redirectToLoginPage({
               postLoginRedirectUrl: "/onboard/client-info"
             });
           }}
@@ -55,7 +54,7 @@ export default function Login() {
               Signing in...
             </>
           ) : (
-            "Sign in with Email"
+            "Sign in"
           )}
         </Button>
       </Card>
