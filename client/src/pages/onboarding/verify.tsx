@@ -97,18 +97,6 @@ export default function Verify() {
             <p className="text-sm text-muted-foreground">API Key</p>
             <p className="font-medium">••••••••{pendingClient.apiKey.slice(-4)}</p>
           </div>
-
-          <div className="p-4 bg-muted rounded-lg">
-            <p className="text-sm text-muted-foreground mb-2">Selected Services</p>
-            <ul className="space-y-2">
-              {pendingClient.services.map((service, index) => (
-                <li key={index} className="flex items-center gap-2">
-                  <CheckCircle2 className="h-4 w-4" />
-                  <span>{service}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
         </div>
 
         <div className="flex justify-between gap-4">
