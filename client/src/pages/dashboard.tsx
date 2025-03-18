@@ -6,6 +6,7 @@ import { useLocation } from "wouter";
 import { Plus, Users, Zap, Clock } from "lucide-react";
 import { useAuth0 } from "@auth0/auth0-react";
 import { queryClient } from "@/lib/queryClient";
+import { BetaBadge } from "@/components/ui/beta-badge";
 
 export default function Dashboard() {
   const [_, setLocation] = useLocation();
@@ -15,10 +16,7 @@ export default function Dashboard() {
   });
 
   const handleLogout = () => {
-    // Clear query cache
     queryClient.clear();
-
-    // Logout and redirect to home
     logout({ 
       logoutParams: {
         returnTo: window.location.origin,
@@ -33,6 +31,7 @@ export default function Dashboard() {
           <div className="flex items-center gap-2 flex-1">
             <Database className="h-6 w-6" />
             <span className="font-semibold">Rufus Labs Onboarding</span>
+            <BetaBadge />
           </div>
           <div className="flex items-center gap-2">
             <Button onClick={() => setLocation("/onboard/client-info")}>

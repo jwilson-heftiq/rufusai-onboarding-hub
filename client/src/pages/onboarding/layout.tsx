@@ -1,6 +1,7 @@
 import { ReactNode } from "react";
 import { Card } from "@/components/ui/card";
 import { Database } from "lucide-react";
+import { BetaBadge } from "@/components/ui/beta-badge";
 
 export default function OnboardingLayout({ children }: { children: ReactNode }) {
   return (
@@ -9,6 +10,7 @@ export default function OnboardingLayout({ children }: { children: ReactNode }) 
         <div className="flex items-center gap-2">
           <Database className="h-6 w-6" />
           <span className="font-semibold">Rufus Labs Onboarding</span>
+          <BetaBadge />
         </div>
       </header>
 
