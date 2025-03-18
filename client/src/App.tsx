@@ -9,6 +9,7 @@ import Success from "@/pages/onboarding/success";
 import Login from "@/pages/login";
 import { Auth0Provider } from "@auth0/auth0-react";
 import { useAuthRedirect } from "./lib/auth";
+import { ErrorBoundary } from "./lib/error-boundary";
 
 function ProtectedRoute({ component: Component }: { component: () => JSX.Element }) {
   const { isLoading, isAuthenticated } = useAuthRedirect();
@@ -58,22 +59,24 @@ export default function App() {
   }
 
   return (
-    <Auth0Provider
-      domain={domain}
-      clientId={clientId}
-      authorizationParams={{
-        redirect_uri: `${window.location.origin}/callback`,
-        audience: `https://${domain}/api/v2/`,
-        scope: "openid profile email offline_access"
-      }}
-      cacheLocation="localstorage"
-      useRefreshTokens={true}
-      useRefreshTokensFallback={true}
-    >
-      <QueryClientProvider client={queryClient}>
-        <Router />
-        <Toaster />
-      </QueryClientProvider>
-    </Auth0Provider>
+    <ErrorBoundary>
+      <Auth0Provider
+        domain={domain}
+        clientId={clientId}
+        authorizationParams={{
+          redirect_uri: `${window.location.origin}/callback`,
+          audience: `https://${domain}/api/v2/`,
+          scope: "openid profile email offline_access"
+        }}
+        cacheLocation="localstorage"
+        useRefreshTokens={true}
+        useRefreshTokensFallback={true}
+      >
+        <QueryClientProvider client={queryClient}>
+          <Router />
+          <Toaster />
+        </QueryClientProvider>
+      </Auth0Provider>
+    </ErrorBoundary>
   );
 }
