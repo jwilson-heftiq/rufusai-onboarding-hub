@@ -1,4 +1,4 @@
-import { useAuth0 } from "@auth0/auth0-react";
+import { useAuthInfo, useRedirectFunctions } from "@propelauth/react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Database, Loader2 } from "lucide-react";
@@ -6,32 +6,21 @@ import { useEffect } from "react";
 import { useLocation } from "wouter";
 
 export default function Login() {
-  const { loginWithRedirect, isAuthenticated, isLoading, error } = useAuth0();
+  const { loading: isLoading, user } = useAuthInfo();
+  const { redirectToLogin } = useRedirectFunctions();
   const [_, setLocation] = useLocation();
 
   useEffect(() => {
-    if (isAuthenticated) {
+    if (user) {
       console.log("User authenticated, redirecting to onboarding");
       setLocation("/onboard/client-info");
     }
-  }, [isAuthenticated, setLocation]);
+  }, [user, setLocation]);
 
-  if (error) {
-    console.error("Auth0 error:", error);
+  if (isLoading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
-        <Card className="w-full max-w-md p-6">
-          <div className="text-center">
-            <p className="text-destructive">Authentication Error: {error.message}</p>
-            <Button 
-              className="mt-4" 
-              variant="outline" 
-              onClick={() => window.location.reload()}
-            >
-              Try Again
-            </Button>
-          </div>
-        </Card>
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
       </div>
     );
   }
@@ -52,13 +41,10 @@ export default function Login() {
         <Button 
           className="w-full" 
           onClick={() => {
-            console.log("Initiating passwordless login redirect");
-            loginWithRedirect({
-              authorizationParams: {
-                connection: 'email',
-                prompt: 'login',
-              },
-              appState: { returnTo: "/onboard/client-info" }
+            console.log("Initiating PropelAuth login redirect");
+            redirectToLogin({
+              redirectToCurrentPage: true,
+              postLoginRedirectUrl: "/onboard/client-info"
             });
           }}
           disabled={isLoading}
