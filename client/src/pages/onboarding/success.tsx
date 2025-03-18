@@ -17,14 +17,9 @@ export default function Success() {
           </p>
         </div>
 
-        <div className="space-x-4">
-          <Button onClick={() => setLocation("/onboard/client-info")}>
-            Add Another Client
-          </Button>
-          <Button variant="outline" onClick={() => setLocation("/dashboard")}>
-            Go to Dashboard
-          </Button>
-        </div>
+        <Button onClick={() => setLocation("/onboard/client-info")}>
+          Add Another Client
+        </Button>
       </div>
     </OnboardingLayout>
   );

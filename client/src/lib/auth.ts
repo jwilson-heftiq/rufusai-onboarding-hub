@@ -19,9 +19,9 @@ export function useAuthRedirect() {
           setLocation('/login');
         }
       } else if (location === '/login') {
-        // If authenticated but on login page, redirect to dashboard
-        console.log('Already authenticated, redirecting to dashboard');
-        setLocation('/dashboard');
+        // If authenticated but on login page, redirect to onboarding
+        console.log('Already authenticated, redirecting to onboarding');
+        setLocation('/onboard/client-info');
       }
     }
   }, [isAuthenticated, isLoading, location, setLocation]);

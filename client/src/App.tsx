@@ -6,7 +6,6 @@ import NotFound from "@/pages/not-found";
 import ClientInfo from "@/pages/onboarding/client-info";
 import Verify from "@/pages/onboarding/verify";
 import Success from "@/pages/onboarding/success";
-import Dashboard from "@/pages/dashboard";
 import Login from "@/pages/login";
 import { Auth0Provider } from "@auth0/auth0-react";
 import { useAuthRedirect } from "./lib/auth";
@@ -37,12 +36,11 @@ function Router() {
           </div>
         );
       }} />
-      <Route path="/dashboard" component={() => <ProtectedRoute component={Dashboard} />} />
       {/* Onboarding routes */}
       <Route path="/onboard/client-info" component={() => <ProtectedRoute component={ClientInfo} />} />
       <Route path="/onboard/verify" component={() => <ProtectedRoute component={Verify} />} />
       <Route path="/onboard/success" component={() => <ProtectedRoute component={Success} />} />
-      <Route path="/" component={Login} />
+      <Route path="/" component={() => <ProtectedRoute component={ClientInfo} />} />
       <Route component={NotFound} />
     </Switch>
   );
