@@ -23,6 +23,7 @@ app.use('/api', (req, res, next) => {
   next();
 });
 
+// Add comprehensive request logging middleware
 app.use((req, res, next) => {
   const start = Date.now();
   const path = req.path;
@@ -70,12 +71,13 @@ app.use((req, res, next) => {
     serveStatic(app);
   }
 
-  const port = 5000;
+  const port = process.env.PORT || 5000;
   server.listen({
     port,
     host: "0.0.0.0",
     reusePort: true,
   }, () => {
     log(`serving on port ${port}`);
+    log(`Environment: ${app.get("env")}`);
   });
 })();

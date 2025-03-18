@@ -98,6 +98,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Health check endpoint for deployment monitoring
+  app.get("/health", (req, res) => {
+    res.json({
+      status: "healthy",
+      timestamp: new Date().toISOString(),
+      version: "beta",
+      environment: app.get("env")
+    });
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }
