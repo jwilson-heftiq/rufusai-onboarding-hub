@@ -9,7 +9,7 @@ export default function OnboardingLayout({ children }: { children: ReactNode }) 
       <header className="border-b px-6 py-4">
         <div className="flex items-center gap-2">
           <Database className="h-6 w-6" />
-          <span className="font-semibold">Rufus Labs Onboarding</span>
+          <span className="font-semibold">RufusAI Onboarding Hub</span>
           <BetaBadge />
         </div>
       </header>

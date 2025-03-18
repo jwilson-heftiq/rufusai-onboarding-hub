@@ -30,7 +30,7 @@ export default function Dashboard() {
         <div className="flex h-16 items-center px-4 container">
           <div className="flex items-center gap-2 flex-1">
             <Database className="h-6 w-6" />
-            <span className="font-semibold">Rufus Labs Onboarding</span>
+            <span className="font-semibold">RufusAI Onboarding Hub</span>
             <BetaBadge />
           </div>
           <div className="flex items-center gap-2">
