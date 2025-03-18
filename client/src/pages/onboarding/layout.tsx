@@ -2,6 +2,7 @@ import { ReactNode } from "react";
 import { Card } from "@/components/ui/card";
 import { BetaBadge } from "@/components/ui/beta-badge";
 import { Logo } from "@/components/ui/logo";
+import { PoweredBy } from "@/components/ui/powered-by";
 
 export default function OnboardingLayout({ children }: { children: ReactNode }) {
   return (
@@ -19,6 +20,12 @@ export default function OnboardingLayout({ children }: { children: ReactNode }) 
           {children}
         </Card>
       </main>
+
+      <footer className="border-t py-4 px-6">
+        <div className="container flex justify-center">
+          <PoweredBy />
+        </div>
+      </footer>
     </div>
   );
 }
