@@ -6,7 +6,7 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-// Add CORS headers for Auth0
+// Add CORS headers for PropelAuth
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*');
   res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
@@ -14,7 +14,7 @@ app.use((req, res, next) => {
   next();
 });
 
-// Middleware to check Auth0 JWT tokens
+// Middleware to check PropelAuth JWT tokens
 app.use('/api', (req, res, next) => {
   const authHeader = req.headers.authorization;
   if (!authHeader) {

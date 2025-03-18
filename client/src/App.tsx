@@ -31,13 +31,11 @@ function Router() {
   return (
     <Switch>
       <Route path="/login" component={Login} />
-      <Route path="/callback" component={() => {
-        return (
-          <div className="flex items-center justify-center min-h-screen">
-            <div className="animate-spin h-8 w-8 border-4 border-primary border-t-transparent rounded-full"></div>
-          </div>
-        );
-      }} />
+      <Route path="/callback" component={() => (
+        <div className="flex items-center justify-center min-h-screen">
+          <div className="animate-spin h-8 w-8 border-4 border-primary border-t-transparent rounded-full"></div>
+        </div>
+      )} />
       {/* Onboarding routes */}
       <Route path="/onboard/client-info" component={() => <ProtectedRoute component={ClientInfo} />} />
       <Route path="/onboard/verify" component={() => <ProtectedRoute component={Verify} />} />
