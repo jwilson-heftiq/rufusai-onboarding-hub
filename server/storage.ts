@@ -17,12 +17,19 @@ export class MemStorage implements IStorage {
   }
 
   async getClient(id: number): Promise<Client | undefined> {
-    return this.clients.get(id);
+    const client = this.clients.get(id);
+    console.log(`[${new Date().toISOString()}] Retrieved client ${id}:`, client ? 'found' : 'not found');
+    return client;
   }
 
   async createClient(insertClient: InsertClient): Promise<Client> {
     try {
-      console.log('Creating client with data:', insertClient);
+      console.log(`[${new Date().toISOString()}] Creating client with data:`, {
+        name: insertClient.name,
+        companyUrl: insertClient.companyUrl,
+        services: insertClient.services
+      });
+
       const id = this.currentId++;
 
       // Ensure services is an array
@@ -38,11 +45,18 @@ export class MemStorage implements IStorage {
         createdAt: new Date(),
       };
 
-      console.log('Generated client object:', client);
+      console.log(`[${new Date().toISOString()}] Generated client object:`, {
+        id: client.id,
+        name: client.name,
+        companyUrl: client.companyUrl,
+        status: client.status,
+        createdAt: client.createdAt
+      });
+
       this.clients.set(id, client);
       return client;
     } catch (error) {
-      console.error('Error in createClient:', error);
+      console.error(`[${new Date().toISOString()}] Error in createClient:`, error);
       throw new Error(`Failed to create client: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
   }
@@ -50,6 +64,7 @@ export class MemStorage implements IStorage {
   async updateClientStatus(id: number, status: string): Promise<Client> {
     const client = await this.getClient(id);
     if (!client) {
+      console.error(`[${new Date().toISOString()}] Failed to update status: Client ${id} not found`);
       throw new Error("Client not found");
     }
 
@@ -57,12 +72,26 @@ export class MemStorage implements IStorage {
       ...client,
       status
     };
+
+    console.log(`[${new Date().toISOString()}] Updated client ${id} status:`, {
+      oldStatus: client.status,
+      newStatus: status
+    });
+
     this.clients.set(id, updatedClient);
     return updatedClient;
   }
 
   async getAllClients(): Promise<Client[]> {
-    return Array.from(this.clients.values());
+    const clients = Array.from(this.clients.values());
+    console.log(`[${new Date().toISOString()}] Retrieved all clients:`, {
+      count: clients.length,
+      statuses: clients.reduce((acc, client) => {
+        acc[client.status] = (acc[client.status] || 0) + 1;
+        return acc;
+      }, {} as Record<string, number>)
+    });
+    return clients;
   }
 }
 
