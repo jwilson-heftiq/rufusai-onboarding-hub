@@ -6,15 +6,11 @@ import { useLocation } from "wouter";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { insertClientSchema, type InsertClient } from "@shared/schema";
 import OnboardingLayout from "./layout";
-import { useMutation } from "@tanstack/react-query";
-import { createClient } from "@/lib/onboarding";
 import { useToast } from "@/hooks/use-toast";
-import { useAuth0 } from "@auth0/auth0-react";
 
 export default function ClientInfo() {
   const [_, setLocation] = useLocation();
   const { toast } = useToast();
-  const { getAccessTokenSilently } = useAuth0();
 
   const form = useForm<InsertClient>({
     resolver: zodResolver(insertClientSchema),
@@ -26,37 +22,19 @@ export default function ClientInfo() {
     }
   });
 
-  const mutation = useMutation({
-    mutationFn: async (data: InsertClient) => {
-      const token = await getAccessTokenSilently();
-      return createClient(data, token);
-    },
-    onSuccess: () => {
+  const onSubmit = async (data: InsertClient) => {
+    try {
+      // Store the form data in sessionStorage for the verify page
+      sessionStorage.setItem('pendingClientData', JSON.stringify(data));
+      // Redirect to verify page
       setLocation("/onboard/verify");
-    },
-    onError: (error: Error) => {
+    } catch (error) {
       console.error('Form submission error:', error);
       toast({
         title: "Submission Failed",
-        description: error.message || "There was an error creating the client. Please try again.",
+        description: error instanceof Error ? error.message : "An unexpected error occurred",
         variant: "destructive"
       });
-    }
-  });
-
-  const onSubmit = async (data: InsertClient) => {
-    try {
-      const submissionData = {
-        name: data.name,
-        companyUrl: data.companyUrl,
-        apiKey: data.apiKey,
-        services: ["API Integration", "Data Analytics Dashboard"]
-      };
-      console.log('Preparing to submit form data:', submissionData);
-      await mutation.mutateAsync(submissionData);
-    } catch (error) {
-      console.error('Form submission error:', error);
-      // Error will be handled by mutation.onError
     }
   };
 
@@ -119,8 +97,8 @@ export default function ClientInfo() {
               <Button variant="outline" onClick={() => setLocation("/dashboard")}>
                 Cancel
               </Button>
-              <Button type="submit" disabled={mutation.isPending}>
-                {mutation.isPending ? "Submitting..." : "Submit"}
+              <Button type="submit">
+                Next
               </Button>
             </div>
           </form>
