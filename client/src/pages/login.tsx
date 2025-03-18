@@ -1,4 +1,4 @@
-import { useAuthInfo, useRedirectFunctions } from "@propelauth/react";
+import { useAuth0 } from "@auth0/auth0-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Database, Loader2 } from "lucide-react";
@@ -6,16 +6,15 @@ import { useEffect } from "react";
 import { useLocation } from "wouter";
 
 export default function Login() {
-  const { isLoading, isLoggedIn } = useAuthInfo();
-  const { redirectToLoginPage } = useRedirectFunctions();
+  const { loginWithRedirect, isAuthenticated, isLoading } = useAuth0();
   const [_, setLocation] = useLocation();
 
   useEffect(() => {
-    if (isLoggedIn) {
+    if (isAuthenticated) {
       console.log("User authenticated, redirecting to onboarding");
       setLocation("/onboard/client-info");
     }
-  }, [isLoggedIn, setLocation]);
+  }, [isAuthenticated, setLocation]);
 
   if (isLoading) {
     return (
@@ -41,9 +40,13 @@ export default function Login() {
         <Button 
           className="w-full" 
           onClick={() => {
-            console.log("Initiating PropelAuth login redirect");
-            redirectToLoginPage({
-              postLoginRedirectUrl: "/onboard/client-info"
+            console.log("Initiating passwordless login redirect");
+            loginWithRedirect({
+              authorizationParams: {
+                connection: 'email',
+                prompt: 'login',
+              },
+              appState: { returnTo: "/onboard/client-info" }
             });
           }}
           disabled={isLoading}
@@ -54,7 +57,7 @@ export default function Login() {
               Signing in...
             </>
           ) : (
-            "Sign in"
+            "Sign in with Email"
           )}
         </Button>
       </Card>

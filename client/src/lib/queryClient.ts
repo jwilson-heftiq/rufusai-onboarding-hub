@@ -1,5 +1,4 @@
 import { QueryClient, QueryFunction } from "@tanstack/react-query";
-import { getAccessToken } from "./propelauth";
 
 async function throwIfResNotOk(res: Response) {
   if (!res.ok) {
@@ -17,13 +16,13 @@ export async function apiRequest(
   method: string,
   url: string,
   data?: unknown | undefined,
+  token?: string,
 ): Promise<Response> {
   try {
     console.log(`Making ${method} request to ${url} with data:`, data);
-    const token = await getAccessToken();
     const headers: Record<string, string> = {
       ...(data ? { "Content-Type": "application/json" } : {}),
-      "Authorization": `Bearer ${token}`
+      ...(token ? { "Authorization": `Bearer ${token}` } : {})
     };
 
     const res = await fetch(url, {
@@ -47,12 +46,8 @@ export const getQueryFn: <T>(options: {
 }) => QueryFunction<T> =
   ({ on401: unauthorizedBehavior }) =>
   async ({ queryKey }) => {
-    const token = await getAccessToken();
     const res = await fetch(queryKey[0] as string, {
       credentials: "include",
-      headers: {
-        "Authorization": `Bearer ${token}`
-      }
     });
 
     if (unauthorizedBehavior === "returnNull" && res.status === 401) {
