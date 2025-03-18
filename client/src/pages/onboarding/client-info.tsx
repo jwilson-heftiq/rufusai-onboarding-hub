@@ -93,10 +93,7 @@ export default function ClientInfo() {
               )}
             />
 
-            <div className="flex justify-between gap-4">
-              <Button variant="outline" onClick={() => setLocation("/dashboard")}>
-                Cancel
-              </Button>
+            <div className="flex justify-end">
               <Button type="submit">
                 Next
               </Button>

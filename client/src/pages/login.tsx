@@ -11,8 +11,8 @@ export default function Login() {
 
   useEffect(() => {
     if (isAuthenticated) {
-      console.log("User authenticated, redirecting to dashboard");
-      setLocation("/dashboard");
+      console.log("User authenticated, redirecting to onboarding");
+      setLocation("/onboard/client-info");
     }
   }, [isAuthenticated, setLocation]);
 
@@ -58,7 +58,7 @@ export default function Login() {
                 connection: 'email',
                 prompt: 'login',
               },
-              appState: { returnTo: "/dashboard" }
+              appState: { returnTo: "/onboard/client-info" }
             });
           }}
           disabled={isLoading}
