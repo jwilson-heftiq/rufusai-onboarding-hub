@@ -31,7 +31,7 @@ export default function Login() {
         <div className="text-center mb-8">
           <div className="flex items-center justify-center gap-2 mb-4">
             <Logo size="lg" />
-            <h1 className="text-2xl font-bold">RufusAI Operational Hub</h1>
+            <h1 className="text-2xl font-bold">RufusAI Operations Hub</h1>
           </div>
           <p className="text-muted-foreground">
             Sign in to access your client management portal
