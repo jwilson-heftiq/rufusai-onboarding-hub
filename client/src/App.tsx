@@ -51,10 +51,10 @@ function Router() {
 }
 
 export default function App() {
-  const domain = "auth.opsiq.heftiq.com";
+  const domain = import.meta.env.VITE_AUTH0_DOMAIN;
   const clientId = import.meta.env.VITE_AUTH0_CLIENT_ID;
 
-  if (!clientId) {
+  if (!domain || !clientId) {
     throw new Error('Missing Auth0 configuration');
   }
 
