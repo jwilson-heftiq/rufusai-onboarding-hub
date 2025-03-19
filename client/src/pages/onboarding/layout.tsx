@@ -10,7 +10,7 @@ export default function OnboardingLayout({ children }: { children: ReactNode }) 
       <header className="border-b px-6 py-4">
         <div className="flex items-center gap-2">
           <Logo size="sm" />
-          <span className="font-semibold">RufusAI Onboarding Hub</span>
+          <span className="font-semibold">RufusAI Operational Hub</span>
           <BetaBadge />
         </div>
       </header>
