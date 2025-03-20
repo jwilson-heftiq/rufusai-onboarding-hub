@@ -5,6 +5,7 @@ import { Loader2 } from "lucide-react";
 import { useEffect } from "react";
 import { useLocation } from "wouter";
 import { Logo } from "@/components/ui/logo";
+import { BetaBadge } from "@/components/ui/beta-badge";
 
 export default function Login() {
   const { loginWithRedirect, isAuthenticated, isLoading } = useAuth0();
@@ -32,6 +33,7 @@ export default function Login() {
           <div className="flex items-center justify-center gap-2 mb-4">
             <Logo size="lg" />
             <h1 className="text-2xl font-bold">RufusAI Operations Hub</h1>
+            <BetaBadge />
           </div>
           <p className="text-muted-foreground">
             Sign in to access your client management portal
