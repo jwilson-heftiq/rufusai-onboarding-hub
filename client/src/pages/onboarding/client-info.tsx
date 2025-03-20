@@ -72,7 +72,7 @@ export default function ClientInfo() {
                     <Input {...field} placeholder="Enter reference ID" />
                   </FormControl>
                   <FormDescription>
-                    Enter the company's reference identifier (e.g. ACME-2024)
+                    Enter the company's reference identifier (i.e. company url)
                   </FormDescription>
                   <FormMessage />
                 </FormItem>
