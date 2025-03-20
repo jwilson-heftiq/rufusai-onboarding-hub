@@ -8,11 +8,12 @@ import { useAuth0 } from "@auth0/auth0-react";
 import { queryClient } from "@/lib/queryClient";
 import { BetaBadge } from "@/components/ui/beta-badge";
 import { Logo } from "@/components/ui/logo";
+import type { Client } from "@shared/schema";
 
 export default function Dashboard() {
   const [_, setLocation] = useLocation();
   const { logout } = useAuth0();
-  const { data: clients } = useQuery({
+  const { data: clients } = useQuery<Client[]>({
     queryKey: ["/api/clients"]
   });
 
@@ -20,7 +21,7 @@ export default function Dashboard() {
     queryClient.clear();
     logout({ 
       logoutParams: {
-        returnTo: window.location.origin,
+        returnTo: window.location.origin + "/login"
       }
     });
   };
@@ -39,7 +40,7 @@ export default function Dashboard() {
               <Plus className="mr-2 h-4 w-4" /> Add New Client
             </Button>
             <Button variant="outline" onClick={handleLogout}>
-              <LogOut className="mr-2 h-4 w-4" /> Logout
+              <LogOut className="mr-2 h-4 w-4" /> Sign Out
             </Button>
           </div>
         </div>
@@ -53,7 +54,7 @@ export default function Dashboard() {
                 <Users className="h-5 w-5 text-muted-foreground" />
                 <h3 className="text-lg font-medium">Total Clients</h3>
               </div>
-              <p className="text-3xl font-bold mt-2">24</p>
+              <p className="text-3xl font-bold mt-2">{clients?.length || 0}</p>
             </CardContent>
           </Card>
 
@@ -63,7 +64,9 @@ export default function Dashboard() {
                 <Zap className="h-5 w-5 text-muted-foreground" />
                 <h3 className="text-lg font-medium">Active Integrations</h3>
               </div>
-              <p className="text-3xl font-bold mt-2">18</p>
+              <p className="text-3xl font-bold mt-2">
+                {clients?.filter(c => c.status === 'active').length || 0}
+              </p>
             </CardContent>
           </Card>
 
@@ -73,7 +76,9 @@ export default function Dashboard() {
                 <Clock className="h-5 w-5 text-muted-foreground" />
                 <h3 className="text-lg font-medium">Pending Setup</h3>
               </div>
-              <p className="text-3xl font-bold mt-2">6</p>
+              <p className="text-3xl font-bold mt-2">
+                {clients?.filter(c => c.status === 'pending').length || 0}
+              </p>
             </CardContent>
           </Card>
         </div>
